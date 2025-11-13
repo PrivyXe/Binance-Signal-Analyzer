@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Signal Analyzer - Advanced Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #94a3b8;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .indicator-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+
+        .indicator-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .indicator-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .indicator-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .indicator-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #475569;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .param-inputs {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .param-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .param-label {
+            font-size: 12px;
+            color: #94a3b8;
+            min-width: 80px;
+        }
+
+        .param-input {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .api-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #fca5a5;
+        }
+
+        .api-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #93c5fd;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        option {
+            background: #1e293b;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Binance Signal Analyzer</h1>
+            <p>Advanced Settings & Configuration</p>
+        </div>
+
+        <!-- API Settings -->
+        <div class="section">
+            <div class="section-title">🔑 API Configuration</div>
+            <div class="api-info">
+                ℹ️ <strong>Note:</strong> API keys are optional for basic price data. Only required if you plan to use private endpoints (trading, account info, etc.) in the future.
+            </div>
+            <div class="input-group">
+                <label for="apiKey">Binance API Key (Optional):</label>
+                <input type="text" id="apiKey" placeholder="Your Binance API Key">
+            </div>
+            <div class="input-group">
+                <label for="apiSecret">Binance API Secret (Optional):</label>
+                <input type="password" id="apiSecret" placeholder="Your Binance API Secret">
+            </div>
+            <div class="api-warning">
+                ⚠️ <strong>Security Warning:</strong> Your API keys are stored locally and never sent anywhere except Binance. Always use API keys with read-only permissions and IP restrictions.
+            </div>
+        </div>
+
+        <!-- Trading Pair Settings -->
+        <div class="section">
+            <div class="section-title">⚙️ Trading Configuration</div>
+            <div class="grid">
+                <div class="input-group">
+                    <label for="symbol">Trading Symbol:</label>
+                    <input type="text" id="symbol" placeholder="BTCUSDT" value="BTCUSDT">
+                </div>
+                <div class="input-group">
+                    <label for="interval">Time Interval:</label>
+                    <select id="interval">
+                        <option value="1m">1 Minute</option>
+                        <option value="3m">3 Minutes</option>
+                        <option value="5m">5 Minutes</option>
+                        <option value="15m">15 Minutes</option>
+                        <option value="30m">30 Minutes</option>
+                        <option value="1h">1 Hour</option>
+                        <option value="2h">2 Hours</option>
+                        <option value="4h">4 Hours</option>
+                        <option value="6h">6 Hours</option>
+                        <option value="12h">12 Hours</option>
+                        <option value="1d">1 Day</option>
+                        <option value="1w">1 Week</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="candleLimit">Number of Candles:</label>
+                    <input type="number" id="candleLimit" value="200" min="50" max="1000">
+                </div>
+                <div class="input-group">
+                    <label for="updateInterval">Update Interval (seconds):</label>
+                    <input type="number" id="updateInterval" value="5" min="1" max="60">
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicators Settings -->
+        <div class="section">
+            <div class="section-title">📈 Technical Indicators</div>
+            <div class="section-subtitle">Enable indicators and configure their parameters</div>
+            
+            <div class="grid">
+                <!-- RSI -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">RSI</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_rsi" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Relative Strength Index</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Period:</span>
+                            <input type="number" class="param-input" id="rsi_period" value="14" min="2" max="50">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Oversold:</span>
+                            <input type="number" class="param-input" id="rsi_oversold" value="30" min="0" max="50">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Overbought:</span>
+                            <input type="number" class="param-input" id="rsi_overbought" value="70" min="50" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMA -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">EMA</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_ema" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Exponential Moving Average</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Fast Period:</span>
+                            <input type="number" class="param-input" id="ema_fast" value="20" min="2" max="200">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Slow Period:</span>
+                            <input type="number" class="param-input" id="ema_slow" value="50" min="2" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMA -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">SMA</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_sma">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Simple Moving Average</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Fast Period:</span>
+                            <input type="number" class="param-input" id="sma_fast" value="20" min="2" max="200">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Slow Period:</span>
+                            <input type="number" class="param-input" id="sma_slow" value="50" min="2" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MACD -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">MACD</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_macd" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Moving Average Convergence Divergence</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Fast:</span>
+                            <input type="number" class="param-input" id="macd_fast" value="12" min="2" max="50">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Slow:</span>
+                            <input type="number" class="param-input" id="macd_slow" value="26" min="2" max="100">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Signal:</span>
+                            <input type="number" class="param-input" id="macd_signal" value="9" min="2" max="50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bollinger Bands -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">Bollinger Bands</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_bb">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Volatility bands</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Period:</span>
+                            <input type="number" class="param-input" id="bb_period" value="20" min="2" max="100">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Std Dev:</span>
+                            <input type="number" class="param-input" id="bb_stddev" value="2" min="1" max="5" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stochastic -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">Stochastic</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_stoch">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Stochastic Oscillator</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">K Period:</span>
+                            <input type="number" class="param-input" id="stoch_k" value="14" min="2" max="50">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">D Period:</span>
+                            <input type="number" class="param-input" id="stoch_d" value="3" min="2" max="50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADX -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">ADX</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_adx">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Average Directional Index</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Period:</span>
+                            <input type="number" class="param-input" id="adx_period" value="14" min="2" max="50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ATR -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">ATR</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_atr">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Average True Range</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Period:</span>
+                            <input type="number" class="param-input" id="atr_period" value="14" min="2" max="50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parabolic SAR -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">Parabolic SAR</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_sar">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Stop and Reverse</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Step:</span>
+                            <input type="number" class="param-input" id="sar_step" value="0.02" min="0.01" max="0.5" step="0.01">
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Max:</span>
+                            <input type="number" class="param-input" id="sar_max" value="0.2" min="0.1" max="1" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <span class="indicator-name">Volume SMA</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ind_volume">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="indicator-desc">Volume Simple Moving Average</div>
+                    <div class="param-inputs">
+                        <div class="param-row">
+                            <span class="param-label">Period:</span>
+                            <input type="number" class="param-input" id="volume_period" value="20" min="2" max="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="buttons">
+            <button class="btn-save" id="saveBtn">💾 Save All Settings</button>
+            <button class="btn-reset" id="resetBtn">🔄 Reset to Defaults</button>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>
+

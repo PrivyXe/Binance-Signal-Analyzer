@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Signal Analyzer - Quick Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 350px;
+            min-height: 400px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            color: #ffffff;
+            padding: 0;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 11px;
+            color: #a0a0c0;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fbbf24;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #d0d0d0;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-group:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .checkbox-label {
+            font-size: 12px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-options {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-options:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            color: #93c5fd;
+            margin-bottom: 15px;
+        }
+
+        option {
+            background: #1e293b;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Binance Signal Analyzer</h1>
+        <p>Quick Settings</p>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <div class="section-title">⚙️ Trading Pair</div>
+            <div class="input-group">
+                <label for="symbol">Symbol:</label>
+                <input type="text" id="symbol" placeholder="BTCUSDT" value="BTCUSDT">
+            </div>
+            <div class="input-group">
+                <label for="interval">Time Interval:</label>
+                <select id="interval">
+                    <option value="1m">1 Minute</option>
+                    <option value="3m">3 Minutes</option>
+                    <option value="5m">5 Minutes</option>
+                    <option value="15m">15 Minutes</option>
+                    <option value="30m">30 Minutes</option>
+                    <option value="1h">1 Hour</option>
+                    <option value="2h">2 Hours</option>
+                    <option value="4h">4 Hours</option>
+                    <option value="1d">1 Day</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📈 Quick Indicators</div>
+            <div class="info-box">
+                Enable/disable indicators below. For more options, click "Advanced Settings".
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="ind_rsi" checked>
+                <label for="ind_rsi" class="checkbox-label">RSI (Relative Strength Index)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="ind_ema" checked>
+                <label for="ind_ema" class="checkbox-label">EMA (Exponential Moving Average)</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="ind_macd" checked>
+                <label for="ind_macd" class="checkbox-label">MACD</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="ind_bb">
+                <label for="ind_bb" class="checkbox-label">Bollinger Bands</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="ind_stoch">
+                <label for="ind_stoch" class="checkbox-label">Stochastic Oscillator</label>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-save" id="saveBtn">💾 Save</button>
+            <button class="btn-reset" id="resetBtn">🔄 Reset</button>
+        </div>
+
+        <button class="btn-options" id="optionsBtn">⚙️ Advanced Settings</button>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
+

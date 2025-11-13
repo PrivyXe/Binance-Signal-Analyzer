@@ -1,0 +1,311 @@
+/* Binance Signal Analyzer - Styles */
+
+/* Floating Panel */
+.signal-panel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: linear-gradient(135deg, rgba(20, 20, 40, 0.95), rgba(30, 30, 60, 0.95));
+  border: 1px solid rgba(100, 100, 200, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 999999;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.signal-panel:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+  border-color: rgba(100, 100, 200, 0.5);
+}
+
+/* Panel Header */
+.panel-header {
+  background: linear-gradient(135deg, rgba(60, 60, 120, 0.6), rgba(40, 40, 80, 0.6));
+  padding: 10px 15px;
+  border-radius: 12px 12px 0 0;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(100, 100, 200, 0.2);
+}
+
+.panel-title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.panel-minimize,
+.panel-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  margin-left: 5px;
+  transition: all 0.2s ease;
+}
+
+.panel-minimize:hover {
+  background: rgba(100, 150, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.panel-close:hover {
+  background: rgba(255, 100, 100, 0.3);
+  transform: scale(1.1);
+}
+
+/* Panel Content */
+.panel-content {
+  padding: 15px;
+  color: #e0e0e0;
+}
+
+.panel-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.panel-section:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.panel-label {
+  font-size: 12px;
+  color: #a0a0c0;
+  font-weight: 500;
+}
+
+.panel-value {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 600;
+  text-align: right;
+}
+
+.panel-select {
+  width: 100%;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.panel-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(100, 150, 255, 0.5);
+}
+
+.panel-select:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #60a5fa;
+}
+
+.panel-select option {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+/* Trend Colors */
+.trend-bullish {
+  color: #00ff88 !important;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.trend-bearish {
+  color: #ff4444 !important;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.trend-neutral {
+  color: #ffcc00 !important;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+/* RSI Colors */
+.rsi-oversold {
+  color: #00ff88 !important;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+.rsi-overbought {
+  color: #ff4444 !important;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+/* Signal Section */
+.signal-section {
+  margin-top: 15px;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(100, 100, 200, 0.2);
+}
+
+.signal-value {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.signal-buy {
+  color: #00ff88 !important;
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+  animation: glow 1.5s infinite;
+}
+
+.signal-sell {
+  color: #ff4444 !important;
+  text-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+  animation: glow 1.5s infinite;
+}
+
+.signal-hold {
+  color: #888888 !important;
+}
+
+/* Panel Footer */
+.panel-footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(100, 100, 200, 0.2);
+  display: flex;
+  gap: 8px;
+}
+
+.refresh-btn,
+.settings-btn {
+  flex: 1;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(80, 80, 180, 0.6), rgba(60, 60, 140, 0.6));
+  border: 1px solid rgba(100, 100, 200, 0.3);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover,
+.settings-btn:hover {
+  background: linear-gradient(135deg, rgba(100, 100, 200, 0.7), rgba(80, 80, 160, 0.7));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(80, 80, 180, 0.4);
+}
+
+.refresh-btn:active,
+.settings-btn:active {
+  transform: translateY(0);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-btn {
+  background: linear-gradient(135deg, rgba(180, 80, 180, 0.6), rgba(140, 60, 140, 0.6));
+}
+
+.settings-btn:hover {
+  background: linear-gradient(135deg, rgba(200, 100, 200, 0.7), rgba(160, 80, 160, 0.7));
+  box-shadow: 0 4px 12px rgba(180, 80, 180, 0.4);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 15px currentColor;
+  }
+  50% {
+    text-shadow: 0 0 25px currentColor, 0 0 35px currentColor;
+  }
+}
+
+/* Chart Overlay Canvas */
+#binance-signal-overlay {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Scrollbar styling for panel */
+.panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 200, 0.4);
+  border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 220, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .signal-panel {
+    width: 240px;
+    right: 10px;
+    top: 60px;
+  }
+  
+  .panel-content {
+    padding: 10px;
+  }
+  
+  .panel-section {
+    padding: 6px 8px;
+    margin-bottom: 8px;
+  }
+  
+  .panel-label {
+    font-size: 11px;
+  }
+  
+  .panel-value {
+    font-size: 12px;
+  }
+}
+
