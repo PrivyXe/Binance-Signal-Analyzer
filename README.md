@@ -333,7 +333,6 @@ See [LICENSE](LICENSE) file for full text.
 
 - 🐛 **Bug Reports**: [Open an issue](https://github.com/PrivyXe/binance-signal-analyzer/issues)
 - 💡 **Feature Requests**: [Request a feature](https://github.com/PrivyXe/binance-signal-analyzer/issues)
-- 📧 **Email**: your.email@example.com
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/PrivyXe/binance-signal-analyzer/discussions)
 
 ## 🙏 Acknowledgments
@@ -457,7 +456,6 @@ MIT License - Değiştirme ve dağıtma konusunda özgürsünüz.
 
 - 🐛 **Hata Raporları**: [Issue aç](https://github.com/PrivyXe/binance-signal-analyzer/issues)
 - 💡 **Özellik İstekleri**: [Özellik talep et](https://github.com/PrivyXe/binance-signal-analyzer/issues)
-- 📧 **E-posta**: your.email@example.com
 
 ---
 
