@@ -23,15 +23,33 @@ A powerful Chrome Extension (Manifest V3) that provides real-time technical anal
 
 ### ✨ Key Features
 
+#### 📊 Advanced Technical Analysis
 - 📈 **10 Technical Indicators** - RSI, EMA, SMA, MACD, Bollinger Bands, Stochastic, ADX, ATR, Parabolic SAR, Volume SMA
-- ⚡ **Real-time Analysis** - Updates every 5 seconds with live market data
-- 🎯 **Smart Signal Generation** - Multi-indicator confluence for accurate buy/sell signals
-- 🎨 **Visual Chart Overlay** - Beautiful canvas-based signal arrows and trend indicators
-- 📱 **Floating Control Panel** - Draggable, minimizable panel with all key metrics
+- 📍 **Support & Resistance Detection** - Automatic swing high/low algorithm with strength indicators
+- 📊 **Volume Profile** - POC (Point of Control), VAH/VAL (Value Area High/Low) analysis
+- 📐 **Fibonacci Retracement & Extension** - Automatic 0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100% levels + extensions
+- 📖 **OrderBook Analysis** - 100-level deep order book with buy/sell pressure indicators
+
+#### 🎯 Smart Trading Recommendations
+- 💰 **TP/SL Calculator** - ATR-based Take Profit and Stop Loss levels
+- 📊 **Leverage Recommendations** - Smart 2x-5x leverage suggestions based on signal strength
+- ⚖️ **Risk/Reward Ratio** - Automatic R:R calculation for every trade
+- 🎯 **Confidence Levels** - HIGH/MEDIUM/LOW confidence based on order book confirmation
+- 🔴 **Aggressive Bearish Signals** - SELL/SHORT recommendations in bearish trends
+
+#### 🎨 Visualization & UI
+- 🎨 **Visual Chart Overlay** - Beautiful canvas-based drawing on Binance charts
+- 📏 **Live Support/Resistance Lines** - Color-coded levels with strength indicators (R1, R2, S1, S2)
+- 📊 **Volume Profile Histogram** - Side panel showing high-volume price levels
+- 🎯 **TP/SL Lines on Chart** - Visual green (TP) and red (SL) lines
+- 📱 **Enhanced Floating Panel** - Draggable, minimizable panel with comprehensive metrics
+
+#### ⚡ Performance & Customization
+- ⚡ **Real-time Updates** - Updates every 5 seconds with live market data
 - ⚙️ **Fully Customizable** - Configure every indicator parameter via advanced settings
 - 🔄 **Dynamic Timeframes** - Seamlessly switch between 1m to 1w timeframes
 - 🌓 **Modern Dark UI** - Glassmorphism design with smooth animations
-- 🔐 **Secure & Private** - All data stored locally, optional API key support
+- 🔐 **Secure & Private** - All data stored locally, no external servers
 - 🚫 **Non-intrusive** - Doesn't modify Binance or TradingView functionality
 
 ## 📸 Screenshots
@@ -81,13 +99,68 @@ A powerful Chrome Extension (Manifest V3) that provides real-time technical anal
 3. **Change Timeframe** - Select from dropdown (1m, 5m, 15m, 1h, 4h, etc.)
 4. **Configure Settings** - Click ⚙️ Settings button for advanced options
 
-### Understanding Signals
+### Understanding Signals & Recommendations
 
-| Signal | Meaning | Visual |
-|--------|---------|--------|
-| 🟢 **BUY** | Strong bullish signal - Consider entering long | Green arrow up on chart |
-| 🔴 **SELL** | Strong bearish signal - Consider entering short | Red arrow down on chart |
-| ⚪ **HOLD** | No clear signal - Wait for better opportunity | No arrow, just trend indicator |
+| Signal | Meaning | Visual | Leverage |
+|--------|---------|--------|----------|
+| 🟢 **LONG** | Strong bullish signal - Enter long position | Green arrow up + TP/SL lines | 2-5x |
+| 🔴 **SHORT** | Strong bearish signal - Enter short position | Red arrow down + TP/SL lines | 2-5x |
+| 🔴 **SELL** | Spot sell recommendation - Exit positions | Red indicator | 1x (Spot) |
+| ⚪ **HOLD** | No clear signal - Wait for better opportunity | Trend indicator only | - |
+
+### Trading Recommendations Explained
+
+Every signal includes comprehensive trading recommendations:
+
+- **Action**: LONG, SHORT, SELL, or HOLD
+- **Take Profit (TP)**: Target price based on 2.5× ATR
+- **Stop Loss (SL)**: Risk level based on 1.5× ATR
+- **Leverage**: Recommended 2x-5x based on signal strength and RSI
+- **Risk/Reward Ratio**: Calculated profit vs loss ratio (e.g., 1:2.5)
+- **Confidence**: HIGH/MEDIUM/LOW based on order book pressure confirmation
+
+### Panel Information Display
+
+The floating panel shows comprehensive trading data:
+
+#### Market Overview
+- **Symbol & Timeframe** - Current trading pair and interval
+- **Current Price** - Real-time price display
+- **Trend** - BULLISH 🟢 / BEARISH 🔴 / NEUTRAL ⚪
+
+#### Active Indicators
+- **RSI** - With oversold/overbought highlighting
+- **EMA20 / EMA50** - Moving averages
+- **MACD** - Momentum indicator
+- All other enabled indicators
+
+#### Trading Recommendations
+- **Action** - LONG/SHORT/SELL/HOLD
+- **Take Profit** - Target price
+- **Stop Loss** - Risk level
+- **Leverage** - Recommended 2x-5x
+- **R/R Ratio** - Risk vs Reward (e.g., 1:2.5)
+- **Confidence** - HIGH/MEDIUM/LOW
+
+#### Key Levels
+- **Resistance** - Nearest resistance level
+- **Support** - Nearest support level
+
+#### Volume Profile
+- **POC** - Point of Control price
+- **VAH** - Value Area High
+- **VAL** - Value Area Low
+
+#### Fibonacci
+- **38.2%** - First retracement level
+- **50%** - Mid-level (psychological)
+- **61.8%** - Golden ratio (strongest)
+- **Trend** - Uptrend/Downtrend indicator
+
+#### Order Book
+- **Bid/Ask Ratio** - Market balance
+- **Pressure** - 🟢 BUY / 🔴 SELL / ⚪ NEUTRAL
+- **Spread** - Current spread in $ and %
 
 ### Panel Controls
 
@@ -114,22 +187,62 @@ A powerful Chrome Extension (Manifest V3) that provides real-time technical anal
 | **Parabolic SAR** | Step: 0.02, Max: 0.2 | Trend reversal points |
 | **Volume SMA** | Period: 20 | Volume trend analysis |
 
-### Signal Strategy
+### Advanced Signal Strategy
 
-**BUY Conditions:**
-- RSI drops below oversold threshold (default: 30)
-- AND EMA20 crosses above EMA50 (golden cross)
-- Optional: Price bounces off lower Bollinger Band
+#### 🟢 LONG Signals (Bullish)
+| RSI Level | Action | Leverage | Confidence |
+|-----------|--------|----------|------------|
+| RSI < 30 | LONG | 5x | Strong signal |
+| RSI < 35 | LONG | 4x | Good signal |
+| RSI < 45 | LONG | 3x | Moderate signal |
 
-**SELL Conditions:**
-- RSI rises above overbought threshold (default: 70)
-- AND EMA20 crosses below EMA50 (death cross)
-- Optional: Price touches upper Bollinger Band
+**Additional Confirmations:**
+- EMA20 > EMA50 (bullish trend)
+- Order book shows BUY_PRESSURE (ratio > 1.15)
+- Price near support levels
+- Volume increasing
 
-**Signal Strength:**
-- **Strong**: Multiple indicators confirm
-- **Weak**: Single indicator signal
-- **Confluence**: 3+ indicators agree
+#### 🔴 SHORT Signals (Bearish)
+| RSI Level | Action | Leverage | Confidence |
+|-----------|--------|----------|------------|
+| RSI > 70 | SHORT | 5x | Strong signal |
+| RSI > 65 | SHORT | 4x | Good signal |
+| RSI > 55 | SHORT | 3x | Moderate signal |
+| RSI 45-55 | SHORT | 2x | Conservative |
+| RSI < 45 | SELL (Spot) | 1x | Exit positions |
+
+**Additional Confirmations:**
+- EMA20 < EMA50 (bearish trend)
+- Order book shows SELL_PRESSURE (ratio < 0.85)
+- Price near resistance levels
+- Divergences detected
+
+#### 📊 Order Book Analysis
+- **100 Levels Deep**: Analyzes 100 bid/ask levels for comprehensive market depth
+- **Volume + Value**: Uses both quantity and USD value for accurate pressure
+- **Pressure Thresholds**: 
+  - Ratio > 1.15 → BUY_PRESSURE 🟢
+  - Ratio < 0.85 → SELL_PRESSURE 🔴
+  - 0.85-1.15 → NEUTRAL ⚪
+
+#### 📍 Support & Resistance
+- **Swing Algorithm**: Finds swing highs/lows with 10-candle lookback
+- **Clustering**: Groups levels within 0.5% tolerance
+- **Strength Indicators**: Shows how many times level was tested
+- **Visual Display**: Color-coded lines (Red = Resistance, Green = Support)
+
+#### 📊 Volume Profile
+- **POC (Point of Control)**: Highest volume price level - strongest S/R
+- **VAH (Value Area High)**: Upper boundary of 70% volume
+- **VAL (Value Area Low)**: Lower boundary of 70% volume
+- **Histogram**: Shows volume distribution across price levels
+
+#### 📐 Fibonacci Levels
+- **Retracement**: 0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100%
+- **Extension**: 127.2%, 161.8%, 200%, 261.8%
+- **Auto Detection**: Finds swing high/low automatically
+- **Visual Display**: Color-coded levels on chart (Golden ratio: 61.8%)
+- **Trend Recognition**: Shows if market is in uptrend or downtrend
 
 ## ⚙️ Configuration
 
@@ -182,13 +295,37 @@ Update: 30 seconds
 ```
 extension/
 ├── manifest.json           # Extension configuration (Manifest V3)
-├── background.js          # Service worker - data fetching & analysis
-├── content.js            # Content script - UI injection & panel
-├── overlay.js            # Chart overlay - signal visualization
-├── indicators.js         # Technical indicator calculations
+├── background.js          # Service worker - Core engine
+│   ├── Kline data fetching (Binance API)
+│   ├── OrderBook analysis (100 levels)
+│   ├── Technical indicator calculations
+│   ├── Support/Resistance detection
+│   ├── Volume Profile calculation
+│   ├── TP/SL recommendations
+│   └── Signal generation logic
+├── content.js            # Content script - UI management
+│   ├── Floating panel creation
+│   ├── Real-time data display
+│   ├── Indicator formatting
+│   └── User interaction handling
+├── overlay.js            # Chart overlay - Visual drawing
+│   ├── Fibonacci retracement/extension
+│   ├── Support/Resistance lines
+│   ├── Volume Profile histogram
+│   ├── TP/SL level indicators
+│   ├── Signal arrows
+│   └── Trend indicators
+├── indicators.js         # Pure calculation functions
+│   ├── RSI, EMA, SMA, MACD
+│   ├── Bollinger Bands, Stochastic
+│   ├── ADX, ATR, Parabolic SAR
+│   └── Volume analysis
 ├── popup.html/js         # Quick settings popup
 ├── options.html/js       # Advanced settings page
 ├── styles.css           # Modern UI styling
+│   ├── Panel design
+│   ├── Color schemes
+│   └── Animations
 └── icons/               # Extension icons
 ```
 
@@ -278,28 +415,31 @@ Contributions are welcome! Please follow these steps:
 
 ### Contribution Ideas
 
-- [ ] Add more technical indicators
-- [ ] Multiple symbol tracking
-- [ ] Alert/notification system
-- [ ] Signal history & backtesting
-- [ ] Export data to CSV
+- [ ] Add more technical indicators (Ichimoku, etc.)
+- [ ] Multiple symbol tracking dashboard
+- [ ] Alert/notification system with sound
+- [ ] Signal history & backtesting engine
+- [ ] Export data to CSV/JSON
 - [ ] Mobile app integration
-- [ ] Custom strategy builder
+- [ ] Visual strategy builder
 - [ ] Dark/light theme toggle
+- [ ] Heatmap visualization
+- [ ] Order flow analysis
+- [ ] Market profile charts
+- [ ] Time & Sales data
 
 ## 📋 Roadmap
 
-### Version 1.1 (Planned)
-- [ ] Alert system (browser notifications)
-- [ ] Signal history log
-- [ ] Multiple watchlist support
-- [ ] Export signals to CSV
-
-### Version 2.0 (Future)
-- [ ] Backtesting engine
-- [ ] Custom strategy builder
-- [ ] AI-powered signal optimization
-- [ ] Mobile companion app
+### Version 1.0 ✅ (Current)
+- ✅ 10 Technical indicators
+- ✅ Support/Resistance detection
+- ✅ Volume Profile analysis
+- ✅ OrderBook integration (100 levels)
+- ✅ Fibonacci retracement/extension
+- ✅ TP/SL calculator
+- ✅ Leverage recommendations
+- ✅ Visual chart overlay
+- ✅ Risk/Reward ratio
 
 ## ⚠️ Disclaimer
 
@@ -348,7 +488,7 @@ See [LICENSE](LICENSE) file for full text.
 
 ### ⭐ Star this repo if you find it helpful!
 
-Made with ❤️ by passionate traders
+Made by [x.com/PrivyXe](https://x.com/PrivyXe)
 
 **Happy Trading! 📈🚀**
 
@@ -370,15 +510,33 @@ Binance'de gerçek zamanlı teknik analiz sağlayan güçlü bir Chrome eklentis
 
 ### ✨ Temel Özellikler
 
+#### 📊 Gelişmiş Teknik Analiz
 - 📈 **10 Teknik Gösterge** - RSI, EMA, SMA, MACD, Bollinger Bantları, Stokastik, ADX, ATR, Parabolik SAR, Hacim SMA
-- ⚡ **Gerçek Zamanlı Analiz** - Canlı piyasa verileriyle her 5 saniyede güncelleme
-- 🎯 **Akıllı Sinyal Üretimi** - Doğru al/sat sinyalleri için çoklu gösterge uyumu
-- 🎨 **Görsel Grafik Overlay** - Canvas tabanlı güzel sinyal okları ve trend göstergeleri
-- 📱 **Yüzen Kontrol Paneli** - Sürüklenebilir, küçültülebilir panel
+- 📍 **Destek & Direnç Tespiti** - Otomatik swing high/low algoritması ile güç göstergeleri
+- 📊 **Volume Profile** - POC (En Yoğun İşlem Seviyesi), VAH/VAL (Değer Alanı) analizi
+- 📐 **Fibonacci Retracement & Extension** - Otomatik 0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100% seviyeleri + uzatmalar
+- 📖 **OrderBook Analizi** - 100 seviye derinliğinde emir defteri ile alım/satım baskısı göstergeleri
+
+#### 🎯 Akıllı Trading Önerileri
+- 💰 **TP/SL Hesaplayıcı** - ATR bazlı Kar Al ve Zarar Durdur seviyeleri
+- 📊 **Kaldıraç Önerileri** - Sinyal gücüne göre akıllı 2x-5x kaldıraç önerileri
+- ⚖️ **Risk/Ödül Oranı** - Her işlem için otomatik R:R hesaplama
+- 🎯 **Güven Seviyeleri** - OrderBook onayına dayalı YÜKSEK/ORTA/DÜŞÜK güven
+- 🔴 **Agresif Düşüş Sinyalleri** - Düşüş trendlerinde SELL/SHORT önerileri
+
+#### 🎨 Görselleştirme & Arayüz
+- 🎨 **Görsel Grafik Overlay** - Binance grafikleri üzerine güzel canvas çizimleri
+- 📏 **Canlı Destek/Direnç Çizgileri** - Güç göstergeli renkli seviyeler (R1, R2, S1, S2)
+- 📊 **Volume Profile Histogramı** - Yüksek hacimli fiyat seviyelerini gösteren yan panel
+- 🎯 **Grafik Üzerinde TP/SL Çizgileri** - Görsel yeşil (TP) ve kırmızı (SL) çizgiler
+- 📱 **Gelişmiş Yüzen Panel** - Kapsamlı metriklerle sürüklenebilir panel
+
+#### ⚡ Performans & Özelleştirme
+- ⚡ **Gerçek Zamanlı Güncelleme** - Canlı piyasa verileriyle her 5 saniyede güncelleme
 - ⚙️ **Tamamen Özelleştirilebilir** - Gelişmiş ayarlarla her gösterge parametresini yapılandırın
 - 🔄 **Dinamik Zaman Dilimleri** - 1d'den 1h'ye sorunsuz geçiş
 - 🌓 **Modern Karanlık UI** - Glassmorphism tasarım ve düzgün animasyonlar
-- 🔐 **Güvenli ve Özel** - Tüm veriler yerel olarak saklanır
+- 🔐 **Güvenli ve Özel** - Tüm veriler yerel olarak saklanır, harici sunucu yok
 - 🚫 **İşlevselliği Bozmayan** - Binance veya TradingView'ı değiştirmez
 
 ## 🛠️ Kurulum
@@ -407,7 +565,61 @@ Binance'de gerçek zamanlı teknik analiz sağlayan güçlü bir Chrome eklentis
    - Panel otomatik olarak sağ üst köşede görünür
    - Sinyaller grafikte belirir! 🎉
 
-## 📊 Teknik Göstergeler
+## 📊 Teknik Göstergeler & Analiz Araçları
+
+### Trading Önerileri
+
+Her sinyal kapsamlı trading önerileri içerir:
+
+| Özellik | Açıklama | Örnek |
+|---------|----------|-------|
+| **Action** | İşlem türü | LONG, SHORT, SELL, HOLD |
+| **Take Profit** | Hedef fiyat | 2.5× ATR bazlı |
+| **Stop Loss** | Risk seviyesi | 1.5× ATR bazlı |
+| **Leverage** | Kaldıraç önerisi | 2x-5x (sinyal gücüne göre) |
+| **R/R Ratio** | Risk/Ödül oranı | 1:2.5 |
+| **Confidence** | Güven seviyesi | YÜKSEK/ORTA/DÜŞÜK |
+
+### Sinyal Stratejisi
+
+#### 🟢 LONG Sinyalleri (Yükseliş)
+- RSI < 30 → 5x kaldıraç (Güçlü sinyal)
+- RSI < 35 → 4x kaldıraç (İyi sinyal)
+- RSI < 45 → 3x kaldıraç (Orta sinyal)
+
+#### 🔴 SHORT Sinyalleri (Düşüş)
+- RSI > 70 → 5x kaldıraç (Güçlü sinyal)
+- RSI > 65 → 4x kaldıraç (İyi sinyal)
+- RSI > 55 → 3x kaldıraç (Orta sinyal)
+- RSI 45-55 → 2x kaldıraç (Muhafazakar)
+- RSI < 45 → SELL (Spot satış)
+
+### Gelişmiş Özellikler
+
+#### 📍 Destek & Direnç
+- 10 mum geribakışlı swing algoritması
+- %0.5 tolerans ile kümeleme
+- Test sayısı ile güç göstergesi
+- Grafikte renkli çizgiler
+
+#### 📊 Volume Profile
+- **POC**: En yoğun işlem fiyatı
+- **VAH/VAL**: %70 hacim alanı sınırları
+- Yan panelde histogram
+- Sarı = POC, Mavi = Value Area
+
+#### 📖 OrderBook
+- 100 seviye derinlik analizi
+- Hacim + Değer bazlı oran
+- Baskı eşikleri: >1.15 (ALIM), <0.85 (SATIM)
+- Gerçek zamanlı güncelleme
+
+#### 📐 Fibonacci Seviyeleri
+- **Retracement**: 0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100%
+- **Extension**: 127.2%, 161.8%, 200%, 261.8%
+- **Otomatik Tespit**: Swing high/low'u otomatik bulur
+- **Görsel Gösterim**: Grafikte renkli seviyeler (Altın oran: 61.8%)
+- **Trend Tanıma**: Yükseliş veya düşüş trendi gösterir
 
 Tüm göstergeler tamamen özelleştirilebilir parametrelerle gelir. Varsayılan değerler en yaygın trading stratejileri için optimize edilmiştir.
 
@@ -463,7 +675,7 @@ MIT License - Değiştirme ve dağıtma konusunda özgürsünüz.
 
 ### ⭐ Faydalı bulduysanız yıldız verin!
 
-Tutkulu traderlar tarafından ❤️ ile yapıldı
+[x.com/PrivyXe](https://x.com/PrivyXe) tarafından yapıldı
 
 **İyi Trading'ler! 📈🚀**
 
