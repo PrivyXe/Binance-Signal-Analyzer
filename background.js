@@ -79,6 +79,72 @@ async function fetchKlineData(symbol, interval, limit) {
   }
 }
 
+// Fetch order book (market depth) data from Binance API
+async function fetchOrderBook(symbol, limit = 100) {
+  const url = `https://api.binance.com/api/v3/depth?symbol=${symbol}&limit=${limit}`;
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Parse order book
+    const bids = data.bids.map(bid => ({
+      price: parseFloat(bid[0]),
+      quantity: parseFloat(bid[1])
+    }));
+    
+    const asks = data.asks.map(ask => ({
+      price: parseFloat(ask[0]),
+      quantity: parseFloat(ask[1])
+    }));
+    
+    // Calculate order book metrics with better accuracy
+    const totalBidVolume = bids.reduce((sum, bid) => sum + bid.quantity, 0);
+    const totalAskVolume = asks.reduce((sum, ask) => sum + ask.quantity, 0);
+    
+    // Calculate total value (price * quantity) for better pressure indicator
+    const totalBidValue = bids.reduce((sum, bid) => sum + (bid.price * bid.quantity), 0);
+    const totalAskValue = asks.reduce((sum, ask) => sum + (ask.price * ask.quantity), 0);
+    
+    // Use both volume and value for more accurate ratio
+    const volumeRatio = totalAskVolume > 0 ? (totalBidVolume / totalAskVolume) : 1;
+    const valueRatio = totalAskValue > 0 ? (totalBidValue / totalAskValue) : 1;
+    const bidAskRatio = ((volumeRatio + valueRatio) / 2).toFixed(2); // Average of both
+    
+    // Calculate weighted average prices
+    const weightedBidPrice = totalBidVolume > 0 ? totalBidValue / totalBidVolume : 0;
+    const weightedAskPrice = totalAskVolume > 0 ? totalAskValue / totalAskVolume : 0;
+    
+    // More sophisticated pressure calculation with thresholds
+    let pressure = 'NEUTRAL';
+    const ratio = parseFloat(bidAskRatio);
+    if (ratio > 1.15) { // 15% more bids = strong buy pressure
+      pressure = 'BUY_PRESSURE';
+    } else if (ratio < 0.85) { // 15% more asks = strong sell pressure
+      pressure = 'SELL_PRESSURE';
+    }
+    
+    return {
+      bids: bids.slice(0, 5), // Top 5 bids
+      asks: asks.slice(0, 5), // Top 5 asks
+      bidAskRatio: parseFloat(bidAskRatio),
+      pressure: pressure,
+      totalBidVolume: totalBidVolume.toFixed(2),
+      totalAskVolume: totalAskVolume.toFixed(2),
+      spread: asks.length > 0 && bids.length > 0 ? (asks[0].price - bids[0].price).toFixed(2) : 0,
+      spreadPercent: asks.length > 0 && bids.length > 0 ? 
+        (((asks[0].price - bids[0].price) / bids[0].price) * 100).toFixed(3) : 0
+    };
+  } catch (error) {
+    console.error('[Background] Error fetching order book data:', error);
+    return null;
+  }
+}
+
 // Calculate RSI
 function calculateRSI(closes, period = 14) {
   if (closes.length < period + 1) return null;
@@ -364,10 +430,8 @@ function calculateIndicators(candles, settings) {
     indicators.adx = calculateADX(candles, params.adx.period);
   }
   
-  // ATR
-  if (enabled.atr) {
-    indicators.atr = calculateATR(candles, params.atr.period);
-  }
+  // ATR - Always calculate for TP/SL recommendations
+  indicators.atr = calculateATR(candles, params.atr?.period || 14);
   
   // Parabolic SAR
   if (enabled.sar) {
@@ -380,6 +444,285 @@ function calculateIndicators(candles, settings) {
   }
   
   return indicators;
+}
+
+// Find support and resistance levels using swing high/low algorithm
+function findSupportResistance(candles, lookback = 10, minTouches = 2) {
+  if (candles.length < lookback * 2) return { support: [], resistance: [] };
+  
+  const swingHighs = [];
+  const swingLows = [];
+  
+  // Find swing highs and lows
+  for (let i = lookback; i < candles.length - lookback; i++) {
+    const candle = candles[i];
+    let isSwingHigh = true;
+    let isSwingLow = true;
+    
+    // Check if this is a swing high (higher than surrounding candles)
+    for (let j = i - lookback; j <= i + lookback; j++) {
+      if (j !== i && candles[j].high >= candle.high) {
+        isSwingHigh = false;
+      }
+      if (j !== i && candles[j].low <= candle.low) {
+        isSwingLow = false;
+      }
+    }
+    
+    if (isSwingHigh) {
+      swingHighs.push({ price: candle.high, index: i, time: candle.closeTime });
+    }
+    if (isSwingLow) {
+      swingLows.push({ price: candle.low, index: i, time: candle.closeTime });
+    }
+  }
+  
+  // Cluster nearby levels (within 0.5% of each other)
+  const clusterLevels = (levels, tolerance = 0.005) => {
+    if (levels.length === 0) return [];
+    
+    const clusters = [];
+    const sorted = [...levels].sort((a, b) => a.price - b.price);
+    
+    let currentCluster = [sorted[0]];
+    
+    for (let i = 1; i < sorted.length; i++) {
+      const priceDiff = Math.abs(sorted[i].price - currentCluster[0].price) / currentCluster[0].price;
+      
+      if (priceDiff <= tolerance) {
+        currentCluster.push(sorted[i]);
+      } else {
+        if (currentCluster.length >= minTouches) {
+          const avgPrice = currentCluster.reduce((sum, l) => sum + l.price, 0) / currentCluster.length;
+          clusters.push({
+            price: avgPrice,
+            touches: currentCluster.length,
+            strength: currentCluster.length
+          });
+        }
+        currentCluster = [sorted[i]];
+      }
+    }
+    
+    // Don't forget the last cluster
+    if (currentCluster.length >= minTouches) {
+      const avgPrice = currentCluster.reduce((sum, l) => sum + l.price, 0) / currentCluster.length;
+      clusters.push({
+        price: avgPrice,
+        touches: currentCluster.length,
+        strength: currentCluster.length
+      });
+    }
+    
+    return clusters.sort((a, b) => b.strength - a.strength).slice(0, 5); // Top 5 levels
+  };
+  
+  const resistance = clusterLevels(swingHighs);
+  const support = clusterLevels(swingLows);
+  
+  return { support, resistance };
+}
+
+// Calculate Fibonacci retracement and extension levels
+function calculateFibonacci(candles) {
+  if (candles.length < 20) return null;
+  
+  // Find swing high and swing low in recent candles
+  const lookback = Math.min(50, candles.length);
+  const recentCandles = candles.slice(-lookback);
+  
+  // Find the highest high and lowest low
+  let swingHigh = recentCandles[0].high;
+  let swingLow = recentCandles[0].low;
+  let highIndex = 0;
+  let lowIndex = 0;
+  
+  recentCandles.forEach((candle, index) => {
+    if (candle.high > swingHigh) {
+      swingHigh = candle.high;
+      highIndex = index;
+    }
+    if (candle.low < swingLow) {
+      swingLow = candle.low;
+      lowIndex = index;
+    }
+  });
+  
+  const range = swingHigh - swingLow;
+  const isUptrend = highIndex > lowIndex; // High came after low = uptrend
+  
+  // Fibonacci retracement levels (from high to low)
+  const retracement = {
+    level_0: swingHigh,
+    level_236: swingHigh - (range * 0.236),
+    level_382: swingHigh - (range * 0.382),
+    level_500: swingHigh - (range * 0.500),
+    level_618: swingHigh - (range * 0.618),
+    level_786: swingHigh - (range * 0.786),
+    level_100: swingLow
+  };
+  
+  // Fibonacci extension levels (beyond the range)
+  const extension = {
+    level_1272: isUptrend ? swingHigh + (range * 0.272) : swingLow - (range * 0.272),
+    level_1618: isUptrend ? swingHigh + (range * 0.618) : swingLow - (range * 0.618),
+    level_2000: isUptrend ? swingHigh + (range * 1.000) : swingLow - (range * 1.000),
+    level_2618: isUptrend ? swingHigh + (range * 1.618) : swingLow - (range * 1.618)
+  };
+  
+  return {
+    swingHigh: swingHigh,
+    swingLow: swingLow,
+    range: range,
+    isUptrend: isUptrend,
+    retracement: retracement,
+    extension: extension
+  };
+}
+
+// Calculate volume profile (price levels with most volume)
+function calculateVolumeProfile(candles, bins = 20) {
+  if (candles.length === 0) return null;
+  
+  // Find price range
+  const prices = candles.flatMap(c => [c.high, c.low]);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const priceRange = maxPrice - minPrice;
+  const binSize = priceRange / bins;
+  
+  // Initialize bins
+  const volumeBins = Array(bins).fill(0).map((_, i) => ({
+    priceLevel: minPrice + (i * binSize) + (binSize / 2),
+    volume: 0,
+    minPrice: minPrice + (i * binSize),
+    maxPrice: minPrice + ((i + 1) * binSize)
+  }));
+  
+  // Distribute volume across bins
+  candles.forEach(candle => {
+    const candlePrice = (candle.high + candle.low) / 2;
+    const binIndex = Math.min(Math.floor((candlePrice - minPrice) / binSize), bins - 1);
+    
+    if (binIndex >= 0 && binIndex < bins) {
+      volumeBins[binIndex].volume += candle.volume;
+    }
+  });
+  
+  // Find POC (Point of Control - highest volume)
+  const poc = volumeBins.reduce((max, bin) => 
+    bin.volume > max.volume ? bin : max, volumeBins[0]);
+  
+  // Find Value Area (70% of volume)
+  const totalVolume = volumeBins.reduce((sum, bin) => sum + bin.volume, 0);
+  const targetVolume = totalVolume * 0.7;
+  
+  // Sort by volume to find value area
+  const sortedBins = [...volumeBins].sort((a, b) => b.volume - a.volume);
+  let valueAreaVolume = 0;
+  const valueAreaBins = [];
+  
+  for (const bin of sortedBins) {
+    if (valueAreaVolume < targetVolume) {
+      valueAreaVolume += bin.volume;
+      valueAreaBins.push(bin);
+    } else {
+      break;
+    }
+  }
+  
+  // Calculate VAH (Value Area High) and VAL (Value Area Low)
+  const valueAreaPrices = valueAreaBins.map(b => b.priceLevel);
+  const vah = Math.max(...valueAreaPrices);
+  const val = Math.min(...valueAreaPrices);
+  
+  return {
+    poc: poc.priceLevel,
+    vah: vah,
+    val: val,
+    profile: volumeBins.slice().sort((a, b) => b.volume - a.volume).slice(0, 10), // Top 10 levels
+    totalVolume: totalVolume
+  };
+}
+
+// Calculate risk/reward and position recommendations
+function calculateTradeRecommendations(currentPrice, atr, trend, rsi, indicators) {
+  const recommendations = {
+    action: 'HOLD',
+    takeProfit: null,
+    stopLoss: null,
+    leverage: 1,
+    riskLevel: 'MEDIUM'
+  };
+  
+  if (!atr || !currentPrice) return recommendations;
+  
+  // Calculate ATR-based TP and SL
+  const atrMultiplierTP = 2.5; // Take profit at 2.5x ATR
+  const atrMultiplierSL = 1.5; // Stop loss at 1.5x ATR
+  
+  // Determine action based on trend and indicators
+  if (trend === 'bullish' && rsi && rsi < 45) {
+    recommendations.action = 'LONG';
+    recommendations.takeProfit = currentPrice + (atr * atrMultiplierTP);
+    recommendations.stopLoss = currentPrice - (atr * atrMultiplierSL);
+    
+    // Leverage based on signal strength
+    if (rsi < 30) {
+      recommendations.leverage = 5; // Strong signal
+      recommendations.riskLevel = 'MEDIUM';
+    } else if (rsi < 35) {
+      recommendations.leverage = 4; // Good signal
+      recommendations.riskLevel = 'MEDIUM';
+    } else {
+      recommendations.leverage = 3; // Moderate signal
+      recommendations.riskLevel = 'LOW';
+    }
+  } else if (trend === 'bearish' && rsi && rsi > 55) {
+    // Bearish trend - more aggressive short recommendations
+    recommendations.action = 'SHORT';
+    recommendations.takeProfit = currentPrice - (atr * atrMultiplierTP);
+    recommendations.stopLoss = currentPrice + (atr * atrMultiplierSL);
+    
+    // Leverage based on signal strength
+    if (rsi > 70) {
+      recommendations.leverage = 5; // Strong signal
+      recommendations.riskLevel = 'MEDIUM';
+    } else if (rsi > 65) {
+      recommendations.leverage = 4; // Good signal
+      recommendations.riskLevel = 'MEDIUM';
+    } else {
+      recommendations.leverage = 3; // Moderate signal
+      recommendations.riskLevel = 'LOW';
+    }
+  } else if (trend === 'bearish') {
+    // Bearish trend - even without strong RSI, suggest SELL/SHORT
+    if (rsi && rsi >= 45) {
+      // RSI above 45 in bearish = good short opportunity
+      recommendations.action = 'SHORT';
+      recommendations.takeProfit = currentPrice - (atr * atrMultiplierTP);
+      recommendations.stopLoss = currentPrice + (atr * atrMultiplierSL);
+      recommendations.leverage = 2; // Conservative leverage
+      recommendations.riskLevel = 'LOW';
+    } else {
+      // RSI below 45 in bearish = already oversold, spot sell recommended
+      recommendations.action = 'SELL';
+      recommendations.takeProfit = null;
+      recommendations.stopLoss = currentPrice - (atr * atrMultiplierSL);
+    }
+  } else if (trend === 'bullish' && rsi && rsi >= 45 && rsi <= 55) {
+    // Bullish but not oversold - conservative long or hold
+    recommendations.action = 'HOLD';
+  }
+  
+  // Calculate risk/reward ratio
+  if (recommendations.takeProfit && recommendations.stopLoss) {
+    const profit = Math.abs(recommendations.takeProfit - currentPrice);
+    const loss = Math.abs(currentPrice - recommendations.stopLoss);
+    recommendations.riskRewardRatio = (profit / loss).toFixed(2);
+  }
+  
+  return recommendations;
 }
 
 // Analyze market data
@@ -571,15 +914,39 @@ function analyzeMarket(candles, settings) {
     formattedIndicators.volumeSMA = indicators.volumeSMA.toFixed(2);
   }
   
+  // Calculate trade recommendations
+  const currentPrice = closes[closes.length - 1];
+  const rsiValue = indicators.rsi;
+  const tradeRecommendations = calculateTradeRecommendations(
+    currentPrice,
+    indicators.atr,
+    trend,
+    rsiValue,
+    indicators
+  );
+  
+  // Find support and resistance levels
+  const supportResistance = findSupportResistance(candles, 10, 2);
+  
+  // Calculate volume profile
+  const volumeProfile = calculateVolumeProfile(candles, 20);
+  
+  // Calculate Fibonacci levels
+  const fibonacci = calculateFibonacci(candles);
+  
   return {
     symbol: settings.symbol,
     interval: settings.interval,
     timestamp: Date.now(),
-    currentPrice: closes[closes.length - 1],
+    currentPrice: currentPrice,
     indicators: formattedIndicators,
     trend: trend,
     signal: signal,
     signals: signals,
+    recommendations: tradeRecommendations,
+    supportResistance: supportResistance,
+    volumeProfile: volumeProfile,
+    fibonacci: fibonacci,
     candles: candles.slice(-100)
   };
 }
@@ -590,11 +957,15 @@ async function updateAnalysis() {
   
   await loadSettings();
   
-  const candles = await fetchKlineData(
-    currentSettings.symbol,
-    currentSettings.interval,
-    currentSettings.candleLimit
-  );
+  // Fetch candles and order book in parallel
+  const [candles, orderBook] = await Promise.all([
+    fetchKlineData(
+      currentSettings.symbol,
+      currentSettings.interval,
+      currentSettings.candleLimit
+    ),
+    fetchOrderBook(currentSettings.symbol, 100)
+  ]);
   
   if (!candles) {
     console.error('[Background] Failed to fetch candles');
@@ -605,6 +976,30 @@ async function updateAnalysis() {
   if (!analysis) {
     console.error('[Background] Failed to analyze market');
     return;
+  }
+  
+  // Add order book data to analysis
+  if (orderBook) {
+    analysis.orderBook = orderBook;
+    
+    // Adjust recommendations based on order book pressure
+    if (analysis.recommendations && orderBook.pressure) {
+      if (orderBook.pressure === 'BUY_PRESSURE' && analysis.recommendations.action === 'LONG') {
+        // Increase confidence for longs with buy pressure
+        analysis.recommendations.confidence = 'HIGH';
+      } else if (orderBook.pressure === 'SELL_PRESSURE' && analysis.recommendations.action === 'SHORT') {
+        // Increase confidence for shorts with sell pressure
+        analysis.recommendations.confidence = 'HIGH';
+      } else if (
+        (orderBook.pressure === 'SELL_PRESSURE' && analysis.recommendations.action === 'LONG') ||
+        (orderBook.pressure === 'BUY_PRESSURE' && analysis.recommendations.action === 'SHORT')
+      ) {
+        // Decrease confidence if order book contradicts signal
+        analysis.recommendations.confidence = 'LOW';
+      } else {
+        analysis.recommendations.confidence = 'MEDIUM';
+      }
+    }
   }
   
   await chrome.storage.local.set({ latestAnalysis: analysis });

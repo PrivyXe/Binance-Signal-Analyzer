@@ -101,6 +101,13 @@ function createFloatingPanel() {
         <div class="panel-label">Signal:</div>
         <div class="panel-value signal-value" id="panel-signal">HOLD</div>
       </div>
+      
+      <!-- Trading Recommendations -->
+      <div id="recommendations-container"></div>
+      
+      <!-- Order Book Info -->
+      <div id="orderbook-container"></div>
+      
       <div class="panel-footer">
         <button class="refresh-btn" id="refresh-btn">🔄 Refresh</button>
         <button class="settings-btn" id="settings-btn">⚙️ Settings</button>
@@ -426,6 +433,241 @@ function updatePanelData(analysis) {
   const signalEl = document.getElementById('panel-signal');
   signalEl.textContent = analysis.signal || 'HOLD';
   signalEl.className = 'panel-value signal-value signal-' + (analysis.signal || 'hold').toLowerCase();
+  
+  // Update recommendations
+  const recommendationsContainer = document.getElementById('recommendations-container');
+  if (analysis.recommendations) {
+    const rec = analysis.recommendations;
+    let recHTML = '<div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(100, 100, 200, 0.2);">';
+    recHTML += '<div style="font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📈 Trade Recommendations</div>';
+    
+    // Action
+    if (rec.action && rec.action !== 'HOLD') {
+      let actionColor = rec.action === 'LONG' ? '#00ff88' : rec.action === 'SHORT' ? '#ff4444' : '#fbbf24';
+      recHTML += `
+        <div class="panel-section">
+          <div class="panel-label">Action:</div>
+          <div class="panel-value" style="color: ${actionColor}; font-weight: bold;">${rec.action}</div>
+        </div>
+      `;
+      
+      // Take Profit
+      if (rec.takeProfit) {
+        recHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Take Profit:</div>
+            <div class="panel-value" style="color: #00ff88;">$${rec.takeProfit.toFixed(2)}</div>
+          </div>
+        `;
+      }
+      
+      // Stop Loss
+      if (rec.stopLoss) {
+        recHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Stop Loss:</div>
+            <div class="panel-value" style="color: #ff4444;">$${rec.stopLoss.toFixed(2)}</div>
+          </div>
+        `;
+      }
+      
+      // Leverage
+      if (rec.leverage > 1) {
+        recHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Leverage:</div>
+            <div class="panel-value" style="color: #60a5fa; font-weight: bold;">${rec.leverage}x</div>
+          </div>
+        `;
+      }
+      
+      // Risk/Reward Ratio
+      if (rec.riskRewardRatio) {
+        recHTML += `
+          <div class="panel-section">
+            <div class="panel-label">R/R Ratio:</div>
+            <div class="panel-value" style="color: #a0a0c0;">1:${rec.riskRewardRatio}</div>
+          </div>
+        `;
+      }
+      
+      // Confidence
+      if (rec.confidence) {
+        let confColor = rec.confidence === 'HIGH' ? '#00ff88' : rec.confidence === 'LOW' ? '#ff4444' : '#fbbf24';
+        recHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Confidence:</div>
+            <div class="panel-value" style="color: ${confColor};">${rec.confidence}</div>
+          </div>
+        `;
+      }
+    } else {
+      recHTML += `
+        <div class="panel-section">
+          <div class="panel-label">Action:</div>
+          <div class="panel-value" style="color: #888888;">HOLD</div>
+        </div>
+      `;
+    }
+    
+    recHTML += '</div>';
+    recommendationsContainer.innerHTML = recHTML;
+  } else {
+    recommendationsContainer.innerHTML = '';
+  }
+  
+  // Update order book
+  const orderbookContainer = document.getElementById('orderbook-container');
+  if (analysis.orderBook) {
+    const ob = analysis.orderBook;
+    let obHTML = '<div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(100, 100, 200, 0.2);">';
+    obHTML += '<div style="font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📊 OrderBook</div>';
+    
+    // Bid/Ask Ratio
+    obHTML += `
+      <div class="panel-section">
+        <div class="panel-label">Bid/Ask Ratio:</div>
+        <div class="panel-value">${ob.bidAskRatio}</div>
+      </div>
+    `;
+    
+    // Pressure
+    let pressureColor = ob.pressure === 'BUY_PRESSURE' ? '#00ff88' : ob.pressure === 'SELL_PRESSURE' ? '#ff4444' : '#888888';
+    let pressureText = ob.pressure === 'BUY_PRESSURE' ? '🟢 BUY' : ob.pressure === 'SELL_PRESSURE' ? '🔴 SELL' : '⚪ NEUTRAL';
+    obHTML += `
+      <div class="panel-section">
+        <div class="panel-label">Pressure:</div>
+        <div class="panel-value" style="color: ${pressureColor}; font-weight: bold;">${pressureText}</div>
+      </div>
+    `;
+    
+    // Spread
+    if (ob.spread) {
+      obHTML += `
+        <div class="panel-section">
+          <div class="panel-label">Spread:</div>
+          <div class="panel-value">$${ob.spread} (${ob.spreadPercent}%)</div>
+        </div>
+      `;
+    }
+    
+    obHTML += '</div>';
+    orderbookContainer.innerHTML = obHTML;
+  } else {
+    orderbookContainer.innerHTML = '';
+  }
+  
+  // Update support/resistance info
+  if (analysis.supportResistance) {
+    const sr = analysis.supportResistance;
+    
+    // Add to indicators container if there are levels
+    if ((sr.support && sr.support.length > 0) || (sr.resistance && sr.resistance.length > 0)) {
+      let srHTML = '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(100, 100, 200, 0.2);">';
+      srHTML += '<div style="font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📍 Key Levels</div>';
+      
+      // Nearest resistance
+      if (sr.resistance && sr.resistance.length > 0) {
+        const nearestR = sr.resistance[0];
+        srHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Resistance:</div>
+            <div class="panel-value" style="color: #ff4444;">$${nearestR.price.toFixed(2)}</div>
+          </div>
+        `;
+      }
+      
+      // Nearest support
+      if (sr.support && sr.support.length > 0) {
+        const nearestS = sr.support[0];
+        srHTML += `
+          <div class="panel-section">
+            <div class="panel-label">Support:</div>
+            <div class="panel-value" style="color: #00ff88;">$${nearestS.price.toFixed(2)}</div>
+          </div>
+        `;
+      }
+      
+      srHTML += '</div>';
+      indicatorsContainer.innerHTML += srHTML;
+    }
+  }
+  
+  // Update volume profile info
+  if (analysis.volumeProfile) {
+    const vp = analysis.volumeProfile;
+    let vpHTML = '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(100, 100, 200, 0.2);">';
+    vpHTML += '<div style="font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📊 Volume Profile</div>';
+    
+    // POC
+    if (vp.poc) {
+      vpHTML += `
+        <div class="panel-section">
+          <div class="panel-label">POC:</div>
+          <div class="panel-value" style="color: #ffcc00;">$${vp.poc.toFixed(2)}</div>
+        </div>
+      `;
+    }
+    
+    // VAH
+    if (vp.vah) {
+      vpHTML += `
+        <div class="panel-section">
+          <div class="panel-label">VAH:</div>
+          <div class="panel-value" style="color: #60a5fa;">$${vp.vah.toFixed(2)}</div>
+        </div>
+      `;
+    }
+    
+    // VAL
+    if (vp.val) {
+      vpHTML += `
+        <div class="panel-section">
+          <div class="panel-label">VAL:</div>
+          <div class="panel-value" style="color: #60a5fa;">$${vp.val.toFixed(2)}</div>
+        </div>
+      `;
+    }
+    
+    vpHTML += '</div>';
+    indicatorsContainer.innerHTML += vpHTML;
+  }
+  
+  // Update Fibonacci levels
+  if (analysis.fibonacci) {
+    const fib = analysis.fibonacci;
+    let fibHTML = '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(100, 100, 200, 0.2);">';
+    fibHTML += '<div style="font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📐 Fibonacci</div>';
+    
+    // Show key retracement levels
+    const keyLevels = [
+      { name: '38.2%', value: fib.retracement.level_382, color: '#ffc800' },
+      { name: '50%', value: fib.retracement.level_500, color: '#00ff88' },
+      { name: '61.8%', value: fib.retracement.level_618, color: '#00c8ff' }
+    ];
+    
+    keyLevels.forEach(level => {
+      fibHTML += `
+        <div class="panel-section">
+          <div class="panel-label">${level.name}:</div>
+          <div class="panel-value" style="color: ${level.color};">$${level.value.toFixed(2)}</div>
+        </div>
+      `;
+    });
+    
+    // Show trend direction
+    const trendText = fib.isUptrend ? '📈 Uptrend' : '📉 Downtrend';
+    const trendColor = fib.isUptrend ? '#00ff88' : '#ff4444';
+    fibHTML += `
+      <div class="panel-section">
+        <div class="panel-label">Trend:</div>
+        <div class="panel-value" style="color: ${trendColor}; font-weight: bold;">${trendText}</div>
+      </div>
+    `;
+    
+    fibHTML += '</div>';
+    indicatorsContainer.innerHTML += fibHTML;
+  }
 }
 
 /**

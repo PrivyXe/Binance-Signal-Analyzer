@@ -153,6 +153,18 @@ const ChartOverlay = {
     
     const analysis = this.lastAnalysis;
     
+    // Draw Fibonacci levels (bottom layer)
+    this.drawFibonacci(analysis);
+    
+    // Draw support and resistance levels
+    this.drawSupportResistance(analysis);
+    
+    // Draw volume profile (right side)
+    this.drawVolumeProfile(analysis);
+    
+    // Draw TP/SL lines
+    this.drawTPSLLines(analysis);
+    
     // Always draw trend indicator
     this.drawTrendIndicator(analysis.trend, analysis.signal);
     
@@ -334,10 +346,16 @@ const ChartOverlay = {
     
     this.ctx.save();
     
+    // Calculate box height based on content
+    let boxHeight = 80;
+    if (analysis.recommendations?.action && analysis.recommendations.action !== 'HOLD') {
+      boxHeight += 40;
+    }
+    
     // Draw background
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
     this.ctx.beginPath();
-    this.ctx.roundRect(x - padding, y - 15, 160, 80, 8);
+    this.ctx.roundRect(x - padding, y - 15, 180, boxHeight, 8);
     this.ctx.fill();
     
     // Draw text
@@ -365,10 +383,380 @@ const ChartOverlay = {
       currentY += lineHeight;
     }
     
-    // Volume indicator if available
-    if (analysis.indicators?.volumeSMA) {
-      this.ctx.fillStyle = '#a0a0c0';
-      this.ctx.fillText(`Vol: ${parseFloat(analysis.indicators.volumeSMA).toFixed(0)}`, x, currentY);
+    // Recommendations
+    if (analysis.recommendations?.action && analysis.recommendations.action !== 'HOLD') {
+      const rec = analysis.recommendations;
+      const actionColor = rec.action === 'LONG' ? '#00ff88' : rec.action === 'SHORT' ? '#ff4444' : '#fbbf24';
+      
+      this.ctx.fillStyle = actionColor;
+      this.ctx.font = 'bold 12px Arial';
+      this.ctx.fillText(`${rec.action} ${rec.leverage}x`, x, currentY);
+      currentY += lineHeight;
+      
+      if (rec.takeProfit && rec.stopLoss) {
+        this.ctx.font = '11px Arial';
+        this.ctx.fillStyle = '#00ff88';
+        this.ctx.fillText(`TP: $${rec.takeProfit.toFixed(2)}`, x, currentY);
+        currentY += lineHeight;
+        
+        this.ctx.fillStyle = '#ff4444';
+        this.ctx.fillText(`SL: $${rec.stopLoss.toFixed(2)}`, x, currentY);
+      }
+    }
+    
+    this.ctx.restore();
+  },
+  
+  /**
+   * Draw Fibonacci retracement and extension levels
+   * @param {Object} analysis - Analysis data
+   */
+  drawFibonacci(analysis) {
+    if (!this.canvas || !analysis.fibonacci) return;
+    
+    const fib = analysis.fibonacci;
+    if (!fib.retracement) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    const currentPrice = analysis.currentPrice;
+    
+    // Price to Y mapping
+    const priceRange = currentPrice * 0.15;
+    const highPrice = currentPrice + priceRange / 2;
+    const lowPrice = currentPrice - priceRange / 2;
+    const priceToY = (price) => {
+      const ratio = (highPrice - price) / (highPrice - lowPrice);
+      return height * 0.15 + (height * 0.7) * ratio;
+    };
+    
+    this.ctx.save();
+    
+    // Fibonacci retracement levels
+    const retracementLevels = [
+      { level: '0%', price: fib.retracement.level_0, color: 'rgba(255, 0, 0, 0.5)' },
+      { level: '23.6%', price: fib.retracement.level_236, color: 'rgba(255, 100, 0, 0.4)' },
+      { level: '38.2%', price: fib.retracement.level_382, color: 'rgba(255, 200, 0, 0.4)' },
+      { level: '50%', price: fib.retracement.level_500, color: 'rgba(0, 255, 0, 0.5)' },
+      { level: '61.8%', price: fib.retracement.level_618, color: 'rgba(0, 200, 255, 0.4)' },
+      { level: '78.6%', price: fib.retracement.level_786, color: 'rgba(100, 0, 255, 0.4)' },
+      { level: '100%', price: fib.retracement.level_100, color: 'rgba(0, 0, 255, 0.5)' }
+    ];
+    
+    // Draw retracement levels
+    retracementLevels.forEach(levelData => {
+      const y = priceToY(levelData.price);
+      if (y > height * 0.1 && y < height * 0.9) {
+        this.ctx.strokeStyle = levelData.color;
+        this.ctx.lineWidth = 1.5;
+        this.ctx.setLineDash([8, 4]);
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(width * 0.05, y);
+        this.ctx.lineTo(width * 0.75, y);
+        this.ctx.stroke();
+        
+        // Label
+        this.ctx.setLineDash([]);
+        this.ctx.font = 'bold 10px Arial';
+        this.ctx.fillStyle = levelData.color.replace('0.4', '0.9').replace('0.5', '0.9');
+        this.ctx.fillText(`Fib ${levelData.level}: $${levelData.price.toFixed(2)}`, width * 0.76, y + 4);
+      }
+    });
+    
+    // Draw extension levels if in trend
+    if (fib.extension) {
+      const extensionLevels = [
+        { level: '127.2%', price: fib.extension.level_1272, color: 'rgba(255, 165, 0, 0.4)' },
+        { level: '161.8%', price: fib.extension.level_1618, color: 'rgba(255, 215, 0, 0.5)' },
+        { level: '200%', price: fib.extension.level_2000, color: 'rgba(255, 255, 0, 0.4)' },
+        { level: '261.8%', price: fib.extension.level_2618, color: 'rgba(144, 238, 144, 0.4)' }
+      ];
+      
+      extensionLevels.forEach(levelData => {
+        const y = priceToY(levelData.price);
+        if (y > height * 0.1 && y < height * 0.9) {
+          this.ctx.strokeStyle = levelData.color;
+          this.ctx.lineWidth = 1;
+          this.ctx.setLineDash([4, 4]);
+          
+          this.ctx.beginPath();
+          this.ctx.moveTo(width * 0.05, y);
+          this.ctx.lineTo(width * 0.75, y);
+          this.ctx.stroke();
+          
+          // Label
+          this.ctx.setLineDash([]);
+          this.ctx.font = '9px Arial';
+          this.ctx.fillStyle = levelData.color.replace('0.4', '0.9').replace('0.5', '0.9');
+          this.ctx.fillText(`Ext ${levelData.level}: $${levelData.price.toFixed(2)}`, width * 0.76, y + 3);
+        }
+      });
+    }
+    
+    this.ctx.restore();
+  },
+
+  /**
+   * Draw support and resistance levels
+   * @param {Object} analysis - Analysis data
+   */
+  drawSupportResistance(analysis) {
+    if (!this.canvas || !analysis.supportResistance) return;
+    
+    const { support, resistance } = analysis.supportResistance;
+    if (!support && !resistance) return;
+    
+    const currentPrice = analysis.currentPrice;
+    if (!currentPrice) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    
+    // Calculate price to Y mapping
+    const priceRange = currentPrice * 0.15; // 15% range
+    const highPrice = currentPrice + priceRange / 2;
+    const lowPrice = currentPrice - priceRange / 2;
+    const priceToY = (price) => {
+      const ratio = (highPrice - price) / (highPrice - lowPrice);
+      return height * 0.15 + (height * 0.7) * ratio;
+    };
+    
+    this.ctx.save();
+    
+    // Draw resistance levels (red)
+    if (resistance && resistance.length > 0) {
+      resistance.forEach((level, index) => {
+        const y = priceToY(level.price);
+        if (y > 0 && y < height) {
+          // Line thickness based on strength
+          const lineWidth = Math.min(1 + level.strength * 0.5, 4);
+          const alpha = Math.min(0.3 + level.strength * 0.1, 0.8);
+          
+          this.ctx.strokeStyle = `rgba(255, 68, 68, ${alpha})`;
+          this.ctx.lineWidth = lineWidth;
+          this.ctx.setLineDash([10, 5]);
+          
+          this.ctx.beginPath();
+          this.ctx.moveTo(width * 0.1, y);
+          this.ctx.lineTo(width * 0.9, y);
+          this.ctx.stroke();
+          
+          // Label
+          this.ctx.setLineDash([]);
+          this.ctx.font = '10px Arial';
+          this.ctx.fillStyle = '#ff4444';
+          this.ctx.fillText(`R${index + 1}: $${level.price.toFixed(2)} (${level.touches})`, width * 0.91, y + 4);
+        }
+      });
+    }
+    
+    // Draw support levels (green)
+    if (support && support.length > 0) {
+      support.forEach((level, index) => {
+        const y = priceToY(level.price);
+        if (y > 0 && y < height) {
+          const lineWidth = Math.min(1 + level.strength * 0.5, 4);
+          const alpha = Math.min(0.3 + level.strength * 0.1, 0.8);
+          
+          this.ctx.strokeStyle = `rgba(0, 255, 136, ${alpha})`;
+          this.ctx.lineWidth = lineWidth;
+          this.ctx.setLineDash([10, 5]);
+          
+          this.ctx.beginPath();
+          this.ctx.moveTo(width * 0.1, y);
+          this.ctx.lineTo(width * 0.9, y);
+          this.ctx.stroke();
+          
+          // Label
+          this.ctx.setLineDash([]);
+          this.ctx.font = '10px Arial';
+          this.ctx.fillStyle = '#00ff88';
+          this.ctx.fillText(`S${index + 1}: $${level.price.toFixed(2)} (${level.touches})`, width * 0.91, y + 4);
+        }
+      });
+    }
+    
+    this.ctx.restore();
+  },
+  
+  /**
+   * Draw volume profile on the right side
+   * @param {Object} analysis - Analysis data
+   */
+  drawVolumeProfile(analysis) {
+    if (!this.canvas || !analysis.volumeProfile) return;
+    
+    const vp = analysis.volumeProfile;
+    if (!vp.profile || vp.profile.length === 0) return;
+    
+    const currentPrice = analysis.currentPrice;
+    if (!currentPrice) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    
+    // Volume profile area (right side)
+    const vpX = width * 0.88;
+    const vpWidth = width * 0.1;
+    
+    // Price range
+    const priceRange = currentPrice * 0.15;
+    const highPrice = currentPrice + priceRange / 2;
+    const lowPrice = currentPrice - priceRange / 2;
+    const priceToY = (price) => {
+      const ratio = (highPrice - price) / (highPrice - lowPrice);
+      return height * 0.15 + (height * 0.7) * ratio;
+    };
+    
+    this.ctx.save();
+    
+    // Find max volume for scaling
+    const maxVolume = Math.max(...vp.profile.map(p => p.volume));
+    
+    // Draw volume bars
+    vp.profile.forEach(bin => {
+      const y = priceToY(bin.priceLevel);
+      if (y > height * 0.15 && y < height * 0.85) {
+        const barWidth = (bin.volume / maxVolume) * vpWidth;
+        
+        // Color based on if it's POC or value area
+        let color = 'rgba(100, 100, 200, 0.3)';
+        if (Math.abs(bin.priceLevel - vp.poc) < (priceRange * 0.01)) {
+          color = 'rgba(255, 204, 0, 0.6)'; // POC in yellow
+        } else if (bin.priceLevel >= vp.val && bin.priceLevel <= vp.vah) {
+          color = 'rgba(100, 150, 255, 0.4)'; // Value area in blue
+        }
+        
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(vpX, y - 2, barWidth, 4);
+      }
+    });
+    
+    // Draw POC line (Point of Control)
+    const pocY = priceToY(vp.poc);
+    if (pocY > 0 && pocY < height) {
+      this.ctx.strokeStyle = '#ffcc00';
+      this.ctx.lineWidth = 2;
+      this.ctx.setLineDash([5, 3]);
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(width * 0.1, pocY);
+      this.ctx.lineTo(width * 0.87, pocY);
+      this.ctx.stroke();
+      
+      // POC Label
+      this.ctx.setLineDash([]);
+      this.ctx.font = 'bold 10px Arial';
+      this.ctx.fillStyle = '#ffcc00';
+      this.ctx.fillText(`POC: $${vp.poc.toFixed(2)}`, width * 0.02, pocY - 5);
+    }
+    
+    // Draw VAH and VAL lines
+    if (vp.vah && vp.val) {
+      this.ctx.strokeStyle = 'rgba(100, 150, 255, 0.5)';
+      this.ctx.lineWidth = 1;
+      this.ctx.setLineDash([3, 3]);
+      
+      const vahY = priceToY(vp.vah);
+      const valY = priceToY(vp.val);
+      
+      if (vahY > 0 && vahY < height) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(width * 0.1, vahY);
+        this.ctx.lineTo(width * 0.87, vahY);
+        this.ctx.stroke();
+        
+        this.ctx.font = '9px Arial';
+        this.ctx.fillStyle = '#60a5fa';
+        this.ctx.fillText(`VAH: $${vp.vah.toFixed(2)}`, width * 0.02, vahY - 5);
+      }
+      
+      if (valY > 0 && valY < height) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(width * 0.1, valY);
+        this.ctx.lineTo(width * 0.87, valY);
+        this.ctx.stroke();
+        
+        this.ctx.font = '9px Arial';
+        this.ctx.fillStyle = '#60a5fa';
+        this.ctx.fillText(`VAL: $${vp.val.toFixed(2)}`, width * 0.02, valY + 12);
+      }
+    }
+    
+    this.ctx.restore();
+  },
+
+  /**
+   * Draw TP and SL lines on chart
+   * @param {Object} analysis - Analysis data
+   */
+  drawTPSLLines(analysis) {
+    if (!this.canvas || !analysis.recommendations) return;
+    
+    const rec = analysis.recommendations;
+    if (!rec.takeProfit && !rec.stopLoss) return;
+    
+    const currentPrice = analysis.currentPrice;
+    if (!currentPrice) return;
+    
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    
+    // Calculate approximate price to pixel mapping
+    // This is a simple approximation - in a real chart, you'd need the actual price scale
+    const priceRange = currentPrice * 0.1; // Assume 10% range visible
+    const highPrice = currentPrice + priceRange / 2;
+    const lowPrice = currentPrice - priceRange / 2;
+    const priceToY = (price) => {
+      const ratio = (highPrice - price) / (highPrice - lowPrice);
+      return height * 0.2 + (height * 0.6) * ratio;
+    };
+    
+    this.ctx.save();
+    this.ctx.setLineDash([5, 5]);
+    this.ctx.lineWidth = 2;
+    
+    // Draw Take Profit line
+    if (rec.takeProfit) {
+      const tpY = priceToY(rec.takeProfit);
+      if (tpY > 0 && tpY < height) {
+        this.ctx.strokeStyle = '#00ff88';
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#00ff88';
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(width * 0.15, tpY);
+        this.ctx.lineTo(width * 0.85, tpY);
+        this.ctx.stroke();
+        
+        // Label
+        this.ctx.shadowBlur = 0;
+        this.ctx.font = 'bold 11px Arial';
+        this.ctx.fillStyle = '#00ff88';
+        this.ctx.fillText(`TP: $${rec.takeProfit.toFixed(2)}`, width * 0.86, tpY + 4);
+      }
+    }
+    
+    // Draw Stop Loss line
+    if (rec.stopLoss) {
+      const slY = priceToY(rec.stopLoss);
+      if (slY > 0 && slY < height) {
+        this.ctx.strokeStyle = '#ff4444';
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#ff4444';
+        
+        this.ctx.beginPath();
+        this.ctx.moveTo(width * 0.15, slY);
+        this.ctx.lineTo(width * 0.85, slY);
+        this.ctx.stroke();
+        
+        // Label
+        this.ctx.shadowBlur = 0;
+        this.ctx.font = 'bold 11px Arial';
+        this.ctx.fillStyle = '#ff4444';
+        this.ctx.fillText(`SL: $${rec.stopLoss.toFixed(2)}`, width * 0.86, slY + 4);
+      }
     }
     
     this.ctx.restore();
