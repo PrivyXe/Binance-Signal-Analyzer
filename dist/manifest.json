@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Binance Signal Analyzer Pro",
+  "version": "2.0.0",
+  "description": "Advanced Technical Analysis, Market Screener, Buy/Sell Signals & TP/SL Price Alerts for Binance Trading",
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://api.binance.com/*",
+    "https://fapi.binance.com/*",
+    "https://www.binance.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.binance.com/*/trade/*",
+        "https://www.binance.com/*/futures/*",
+        "https://www.binance.com/trade/*",
+        "https://www.binance.com/futures/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html"
+}

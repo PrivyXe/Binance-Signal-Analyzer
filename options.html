@@ -1,610 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binance Signal Analyzer - Advanced Settings</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header p {
-            color: #94a3b8;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #fbbf24;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 15px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #60a5fa;
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .indicator-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            transition: all 0.3s;
-        }
-
-        .indicator-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(96, 165, 250, 0.3);
-        }
-
-        .indicator-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .indicator-name {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .indicator-desc {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #475569;
-            transition: 0.4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #10b981;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .param-inputs {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .param-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 8px;
-            align-items: center;
-        }
-
-        .param-label {
-            font-size: 12px;
-            color: #94a3b8;
-            min-width: 80px;
-        }
-
-        .param-input {
-            flex: 1;
-            padding: 6px 10px;
-            font-size: 12px;
-        }
-
-        .api-warning {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #fca5a5;
-        }
-
-        .api-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #93c5fd;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        button {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-save {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-reset {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        .btn-reset:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
-        }
-
-        .status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .status.success {
-            background: #10b981;
-            color: white;
-        }
-
-        .status.error {
-            background: #ef4444;
-            color: white;
-        }
-
-        option {
-            background: #1e293b;
-            color: #ffffff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Signal Analyzer Pro - Advanced Settings</title>
+  <link rel="stylesheet" href="/src/options/options.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📊 Binance Signal Analyzer</h1>
-            <p>Advanced Settings & Configuration</p>
+  <div class="options-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">📊</span>
+        <div>
+          <h2>Signal Analyzer</h2>
+          <span class="brand-sub">Advanced Configuration</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#general" class="nav-item active">⚙️ General Settings</a>
+        <a href="#screener" class="nav-item">📡 Screener & Watchlist</a>
+        <a href="#sound" class="nav-item">🔔 Sound & Audio Alerts</a>
+        <a href="#indicators" class="nav-item">📈 Indicators Selection</a>
+        <a href="#parameters" class="nav-item">🎛️ Indicator Parameters</a>
+        <a href="#overlay" class="nav-item">🎨 Chart Canvas Overlay</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="dev-profile-card">
+          <div class="dev-avatar">👨‍💻</div>
+          <div class="dev-info">
+            <span class="dev-name">Developed by <strong>PrivyXe</strong></span>
+            <div class="dev-links-row">
+              <a href="https://x.com/PrivyXe" target="_blank" class="dev-social-link">𝕏 @PrivyXe</a>
+              <a href="https://github.com/PrivyXe" target="_blank" class="dev-social-link">🐙 GitHub</a>
+            </div>
+          </div>
+        </div>
+        <button id="btn-save-top" class="btn btn-save">💾 Save Settings</button>
+        <button id="btn-reset" class="btn btn-outline">🔄 Reset Defaults</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div id="status-toast" class="toast">Settings saved successfully!</div>
+
+      <!-- Section 1: General -->
+      <section id="general" class="settings-section">
+        <h3>⚙️ General Configuration</h3>
+        <p class="section-desc">Default pair and background refresh intervals.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="cfg-symbol">Default Trading Pair</label>
+            <input type="text" id="cfg-symbol" placeholder="BTCUSDT">
+            <span class="hint">e.g. BTCUSDT, ETHUSDT, SOLUSDT</span>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-interval">Default Timeframe</label>
+            <select id="cfg-interval">
+              <option value="1m">1m (1 Minute)</option>
+              <option value="5m">5m (5 Minutes)</option>
+              <option value="15m">15m (15 Minutes)</option>
+              <option value="1h">1h (1 Hour)</option>
+              <option value="4h">4h (4 Hours)</option>
+              <option value="1d">1D (1 Day)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-update-interval">Chart Refresh Rate (Seconds)</label>
+            <input type="number" id="cfg-update-interval" min="2" max="60" value="5">
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-candle-limit">Candle History Limit (Klines)</label>
+            <input type="number" id="cfg-candle-limit" min="50" max="500" value="200">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Screener & Watchlist -->
+      <section id="screener" class="settings-section">
+        <h3>📡 Background Screener & Watchlist</h3>
+        <p class="section-desc">Configure coins monitored automatically in background for Buy/Sell signals.</p>
+        
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="cfg-scanner-enable">
+            <div class="toggle-info">
+              <span class="title">Enable Background Market Screener</span>
+              <span class="desc">Scans watchlist periodically and fires alerts</span>
+            </div>
+          </label>
+
+          <div class="form-group">
+            <label for="cfg-scanner-interval">Scan Interval (Minutes)</label>
+            <input type="number" id="cfg-scanner-interval" min="1" max="60" value="3">
+          </div>
         </div>
 
-        <!-- API Settings -->
-        <div class="section">
-            <div class="section-title">🔑 API Configuration</div>
-            <div class="api-info">
-                ℹ️ <strong>Note:</strong> API keys are optional for basic price data. Only required if you plan to use private endpoints (trading, account info, etc.) in the future.
+        <div style="margin-top: 14px;">
+          <label style="font-weight: 700; font-size: 12px;">Monitored Watchlist Symbols (Comma-separated)</label>
+          <textarea id="cfg-watchlist" rows="3" style="width: 100%; background: #0b1120; border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 8px; border-radius: 8px; font-family: monospace; font-size: 12px; margin-top: 6px;"></textarea>
+          <span class="hint">e.g. BTCUSDT, ETHUSDT, SOLUSDT, BNBUSDT, XRPUSDT, DOGEUSDT, AVAXUSDT</span>
+        </div>
+      </section>
+
+      <!-- Section 3: Sound & Audio -->
+      <section id="sound" class="settings-section">
+        <h3>🔔 Audio Alerts & Sound Chimes</h3>
+        <p class="section-desc">Customize sound notifications for signals and TP/SL triggers.</p>
+
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="cfg-sound-master">
+            <div class="toggle-info">
+              <span class="title">Enable Sound Alerts (Master)</span>
+              <span class="desc">Master switch for all audio chimes</span>
             </div>
-            <div class="input-group">
-                <label for="apiKey">Binance API Key (Optional):</label>
-                <input type="text" id="apiKey" placeholder="Your Binance API Key">
-            </div>
-            <div class="input-group">
-                <label for="apiSecret">Binance API Secret (Optional):</label>
-                <input type="password" id="apiSecret" placeholder="Your Binance API Secret">
-            </div>
-            <div class="api-warning">
-                ⚠️ <strong>Security Warning:</strong> Your API keys are stored locally and never sent anywhere except Binance. Always use API keys with read-only permissions and IP restrictions.
-            </div>
+          </label>
+
+          <div class="form-group">
+            <label for="cfg-sound-vol">Master Volume (10% - 100%)</label>
+            <input type="range" id="cfg-sound-vol" min="0.1" max="1.0" step="0.05" value="0.7">
+          </div>
         </div>
 
-        <!-- Trading Pair Settings -->
-        <div class="section">
-            <div class="section-title">⚙️ Trading Configuration</div>
-            <div class="grid">
-                <div class="input-group">
-                    <label for="symbol">Trading Symbol:</label>
-                    <input type="text" id="symbol" placeholder="BTCUSDT" value="BTCUSDT">
-                </div>
-                <div class="input-group">
-                    <label for="interval">Time Interval:</label>
-                    <select id="interval">
-                        <option value="1m">1 Minute</option>
-                        <option value="3m">3 Minutes</option>
-                        <option value="5m">5 Minutes</option>
-                        <option value="15m">15 Minutes</option>
-                        <option value="30m">30 Minutes</option>
-                        <option value="1h">1 Hour</option>
-                        <option value="2h">2 Hours</option>
-                        <option value="4h">4 Hours</option>
-                        <option value="6h">6 Hours</option>
-                        <option value="12h">12 Hours</option>
-                        <option value="1d">1 Day</option>
-                        <option value="1w">1 Week</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="candleLimit">Number of Candles:</label>
-                    <input type="number" id="candleLimit" value="200" min="50" max="1000">
-                </div>
-                <div class="input-group">
-                    <label for="updateInterval">Update Interval (seconds):</label>
-                    <input type="number" id="updateInterval" value="5" min="1" max="60">
-                </div>
+        <div class="sound-test-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-buy"> Play Sound on BUY Signal</label>
+            <button class="btn-mini-sound" id="test-sound-buy">🔊 Test Buy Chime</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-sell"> Play Sound on SELL Signal</label>
+            <button class="btn-mini-sound" id="test-sound-sell">🔊 Test Sell Chime</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-tp"> Play Sound on TP Target Hit</label>
+            <button class="btn-mini-sound" id="test-sound-tp">🎯 Test TP Victory</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-sl"> Play Sound on Stop Loss Trigger</label>
+            <button class="btn-mini-sound" id="test-sound-sl">🛑 Test SL Alarm</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Indicators Selection -->
+      <section id="indicators" class="settings-section">
+        <h3>📈 Active Technical Indicators</h3>
+        <p class="section-desc">Select indicators calculated and weighted by the composite signal engine.</p>
+        
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-rsi">
+            <div class="toggle-info">
+              <span class="title">RSI (Relative Strength Index)</span>
+              <span class="desc">Identifies oversold & overbought momentum levels</span>
             </div>
-        </div>
+          </label>
 
-        <!-- Indicators Settings -->
-        <div class="section">
-            <div class="section-title">📈 Technical Indicators</div>
-            <div class="section-subtitle">Enable indicators and configure their parameters</div>
-            
-            <div class="grid">
-                <!-- RSI -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">RSI</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_rsi" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Relative Strength Index</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Period:</span>
-                            <input type="number" class="param-input" id="rsi_period" value="14" min="2" max="50">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Oversold:</span>
-                            <input type="number" class="param-input" id="rsi_oversold" value="30" min="0" max="50">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Overbought:</span>
-                            <input type="number" class="param-input" id="rsi_overbought" value="70" min="50" max="100">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- EMA -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">EMA</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_ema" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Exponential Moving Average</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Fast Period:</span>
-                            <input type="number" class="param-input" id="ema_fast" value="20" min="2" max="200">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Slow Period:</span>
-                            <input type="number" class="param-input" id="ema_slow" value="50" min="2" max="200">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SMA -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">SMA</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_sma">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Simple Moving Average</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Fast Period:</span>
-                            <input type="number" class="param-input" id="sma_fast" value="20" min="2" max="200">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Slow Period:</span>
-                            <input type="number" class="param-input" id="sma_slow" value="50" min="2" max="200">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MACD -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">MACD</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_macd" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Moving Average Convergence Divergence</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Fast:</span>
-                            <input type="number" class="param-input" id="macd_fast" value="12" min="2" max="50">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Slow:</span>
-                            <input type="number" class="param-input" id="macd_slow" value="26" min="2" max="100">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Signal:</span>
-                            <input type="number" class="param-input" id="macd_signal" value="9" min="2" max="50">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bollinger Bands -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">Bollinger Bands</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_bb">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Volatility bands</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Period:</span>
-                            <input type="number" class="param-input" id="bb_period" value="20" min="2" max="100">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Std Dev:</span>
-                            <input type="number" class="param-input" id="bb_stddev" value="2" min="1" max="5" step="0.1">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stochastic -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">Stochastic</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_stoch">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Stochastic Oscillator</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">K Period:</span>
-                            <input type="number" class="param-input" id="stoch_k" value="14" min="2" max="50">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">D Period:</span>
-                            <input type="number" class="param-input" id="stoch_d" value="3" min="2" max="50">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ADX -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">ADX</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_adx">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Average Directional Index</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Period:</span>
-                            <input type="number" class="param-input" id="adx_period" value="14" min="2" max="50">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ATR -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">ATR</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_atr">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Average True Range</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Period:</span>
-                            <input type="number" class="param-input" id="atr_period" value="14" min="2" max="50">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Parabolic SAR -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">Parabolic SAR</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_sar">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Stop and Reverse</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Step:</span>
-                            <input type="number" class="param-input" id="sar_step" value="0.02" min="0.01" max="0.5" step="0.01">
-                        </div>
-                        <div class="param-row">
-                            <span class="param-label">Max:</span>
-                            <input type="number" class="param-input" id="sar_max" value="0.2" min="0.1" max="1" step="0.1">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Volume -->
-                <div class="indicator-card">
-                    <div class="indicator-header">
-                        <span class="indicator-name">Volume SMA</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="ind_volume">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="indicator-desc">Volume Simple Moving Average</div>
-                    <div class="param-inputs">
-                        <div class="param-row">
-                            <span class="param-label">Period:</span>
-                            <input type="number" class="param-input" id="volume_period" value="20" min="2" max="100">
-                        </div>
-                    </div>
-                </div>
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-ema">
+            <div class="toggle-info">
+              <span class="title">EMA (Exponential Moving Average)</span>
+              <span class="desc">Fast/Slow moving average trend crossovers</span>
             </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-macd">
+            <div class="toggle-info">
+              <span class="title">MACD (Moving Average Convergence Divergence)</span>
+              <span class="desc">Histogram momentum & signal line crosses</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-bb">
+            <div class="toggle-info">
+              <span class="title">Bollinger Bands</span>
+              <span class="desc">Volatility bands & breakout squeeze detector</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-adx">
+            <div class="toggle-info">
+              <span class="title">ADX (+DI / -DI)</span>
+              <span class="desc">Trend strength and directional movement index</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-stoch">
+            <div class="toggle-info">
+              <span class="title">Stochastic Oscillator</span>
+              <span class="desc">%K and %D cycle momentum oscillator</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sar">
+            <div class="toggle-info">
+              <span class="title">Parabolic SAR</span>
+              <span class="desc">Stop and Reverse trend flip points</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-volume">
+            <div class="toggle-info">
+              <span class="title">Volume SMA & Surge</span>
+              <span class="desc">Volume breakout and trend confirmation</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sr">
+            <div class="toggle-info">
+              <span class="title">Support & Resistance Levels</span>
+              <span class="desc">Dynamic swing high/low price clustering</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-fib">
+            <div class="toggle-info">
+              <span class="title">Fibonacci Retracement</span>
+              <span class="desc">Automatic Golden Ratio zones (0.618, 0.382)</span>
+            </div>
+          </label>
         </div>
+      </section>
 
-        <!-- Action Buttons -->
-        <div class="buttons">
-            <button class="btn-save" id="saveBtn">💾 Save All Settings</button>
-            <button class="btn-reset" id="resetBtn">🔄 Reset to Defaults</button>
+      <!-- Section 5: Parameters -->
+      <section id="parameters" class="settings-section">
+        <h3>🎛️ Indicator Parameters</h3>
+        <div class="params-box">
+          <h4>RSI Settings</h4>
+          <div class="param-row">
+            <label>Period: <input type="number" id="param-rsi-period" min="2" max="50" value="14"></label>
+            <label>Oversold: <input type="number" id="param-rsi-os" min="10" max="45" value="30"></label>
+            <label>Overbought: <input type="number" id="param-rsi-ob" min="55" max="90" value="70"></label>
+          </div>
+
+          <h4>EMA Settings</h4>
+          <div class="param-row">
+            <label>Fast Period: <input type="number" id="param-ema-fast" min="5" max="100" value="20"></label>
+            <label>Slow Period: <input type="number" id="param-ema-slow" min="20" max="300" value="50"></label>
+          </div>
+
+          <h4>MACD Settings</h4>
+          <div class="param-row">
+            <label>Fast: <input type="number" id="param-macd-fast" value="12"></label>
+            <label>Slow: <input type="number" id="param-macd-slow" value="26"></label>
+            <label>Signal: <input type="number" id="param-macd-signal" value="9"></label>
+          </div>
+
+          <h4>ATR & Risk Multipliers</h4>
+          <div class="param-row">
+            <label>ATR Period: <input type="number" id="param-atr-period" value="14"></label>
+            <label>SL Multiplier (x ATR): <input type="number" step="0.1" id="param-atr-sl" value="1.5"></label>
+            <label>TP Multiplier (x ATR): <input type="number" step="0.1" id="param-atr-tp" value="2.5"></label>
+          </div>
         </div>
+      </section>
 
-        <div class="status" id="status"></div>
-    </div>
+      <!-- Section 6: Canvas Overlay -->
+      <section id="overlay" class="settings-section">
+        <h3>🎨 Chart Canvas Overlay</h3>
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-sr">
+            <div class="toggle-info">
+              <span class="title">Support / Resistance Lines</span>
+              <span class="desc">Draw S1, S2, R1, R2 horizontal lines on chart</span>
+            </div>
+          </label>
 
-    <script src="options.js"></script>
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-tpsl">
+            <div class="toggle-info">
+              <span class="title">TP / SL Target Lines</span>
+              <span class="desc">Visualize trade plan targets directly on chart</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-markers">
+            <div class="toggle-info">
+              <span class="title">Buy & Sell Candle Markers</span>
+              <span class="desc">Draw historical ▲ BUY and ▼ SELL signals on chart candles</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-badge">
+            <div class="toggle-info">
+              <span class="title">Top Chart Signal Badge</span>
+              <span class="desc">Show real-time signal pill at the top of the chart</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Bottom Save Action -->
+      <div class="save-bar">
+        <button id="btn-save-bottom" class="btn btn-save">💾 Save All Settings</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/src/options/options.ts"></script>
 </body>
 </html>
-

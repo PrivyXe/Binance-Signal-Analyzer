@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Signal Analyzer</title>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <div class="logo-meta">
+          <h1>Signal Analyzer</h1>
+          <span class="version">v2.0 Pro (TS)</span>
+        </div>
+      </div>
+      <button id="btn-open-options" class="icon-btn" title="Ayarlar">⚙️</button>
+    </header>
+
+    <!-- Pair Selector & Current Price -->
+    <div class="market-bar">
+      <div class="pair-info">
+        <input type="text" id="symbol-input" value="BTCUSDT" placeholder="BTCUSDT">
+        <select id="timeframe-select">
+          <option value="1m">1m</option>
+          <option value="5m">5m</option>
+          <option value="15m">15m</option>
+          <option value="1h">1h</option>
+          <option value="4h" selected>4h</option>
+          <option value="1d">1D</option>
+        </select>
+      </div>
+      <div class="price-info">
+        <span id="price-display">$0.00</span>
+        <span id="change-24h" class="change-tag">+0.00%</span>
+      </div>
+    </div>
+
+    <!-- Signal Banner -->
+    <div class="signal-hero" id="signal-hero">
+      <span class="hero-label">GÜNCEL SİNYAL</span>
+      <div class="signal-status-pill" id="signal-status">YÜKLENİYOR...</div>
+      <div class="score-track">
+        <div class="score-indicator" id="score-indicator" style="width: 50%;"></div>
+      </div>
+      <div class="hero-meta">
+        <span id="trend-val">Trend: --</span>
+        <span id="confidence-val">Güven: --</span>
+      </div>
+    </div>
+
+    <!-- Recommendations Grid -->
+    <div class="section-card">
+      <div class="card-title">İşlem ve Risk Planı</div>
+      <div class="tp-sl-grid">
+        <div class="metric-item">
+          <span class="lbl">Giriş</span>
+          <span class="val" id="rec-entry">-</span>
+        </div>
+        <div class="metric-item">
+          <span class="lbl">Stop Loss</span>
+          <span class="val text-danger" id="rec-sl">-</span>
+        </div>
+        <div class="metric-item">
+          <span class="lbl">Take Profit 1</span>
+          <span class="val text-success" id="rec-tp1">-</span>
+        </div>
+        <div class="metric-item">
+          <span class="lbl">Kaldıraç</span>
+          <span class="val" id="rec-lev">1x</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Indicators Summary -->
+    <div class="section-card">
+      <div class="card-title">İndikatör Özeti</div>
+      <div class="ind-summary-grid" id="ind-summary-grid">
+        <div class="ind-badge" id="badge-rsi">RSI: --</div>
+        <div class="ind-badge" id="badge-ema">EMA: --</div>
+        <div class="ind-badge" id="badge-macd">MACD: --</div>
+        <div class="ind-badge" id="badge-bb">BB: --</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-row">
+      <button id="btn-refresh" class="btn btn-primary">🔄 Analiz Et</button>
+      <a href="https://www.binance.com/en/trade/BTC_USDT" target="_blank" class="btn btn-secondary">🌐 Binance'te Aç</a>
+    </div>
+  </div>
+
+  <script type="module" src="./popup.ts"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Signal Analyzer Pro</title>
+  <script type="module" crossorigin src="/assets/popup-CL7FdNBa.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/soundService-jJxJchzJ.js">
+  <link rel="stylesheet" crossorigin href="/assets/popup-DCxv6TZU.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <div class="logo-meta">
+          <h1>Signal Analyzer</h1>
+          <span class="version">v2.0 Pro (English)</span>
+        </div>
+      </div>
+      <div class="header-right-btns">
+        <button id="btn-test-sound" class="icon-btn" title="Test Alert Audio">🔊</button>
+        <button id="btn-open-options" class="icon-btn" title="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Nav Tabs -->
+    <nav class="popup-tabs">
+      <button class="tab-btn active" data-tab="tab-analysis">📈 Analysis</button>
+      <button class="tab-btn" data-tab="tab-screener">📡 Screener</button>
+      <button class="tab-btn" data-tab="tab-alerts">⏰ Alerts</button>
+    </nav>
+
+    <!-- Tab 1: Analysis -->
+    <div id="tab-analysis" class="tab-pane active">
+      <div class="market-bar">
+        <div class="pair-info">
+          <input type="text" id="symbol-input" value="BTCUSDT" placeholder="BTCUSDT">
+          <select id="timeframe-select">
+            <option value="1m">1m</option>
+            <option value="5m">5m</option>
+            <option value="15m">15m</option>
+            <option value="1h">1h</option>
+            <option value="4h" selected>4h</option>
+            <option value="1d">1D</option>
+          </select>
+        </div>
+        <div class="price-info">
+          <span id="price-display">$0.00</span>
+          <span id="change-24h" class="change-tag">+0.00%</span>
+        </div>
+      </div>
+
+      <div class="signal-hero" id="signal-hero">
+        <span class="hero-label">CURRENT SIGNAL</span>
+        <div class="signal-status-pill" id="signal-status">LOADING...</div>
+        <div class="score-track">
+          <div class="score-indicator" id="score-indicator" style="width: 50%;"></div>
+        </div>
+        <div class="hero-meta">
+          <span id="trend-val">Trend: --</span>
+          <span id="confidence-val">Confidence: --</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-title">Trade & Risk Plan</div>
+        <div class="tp-sl-grid">
+          <div class="metric-item">
+            <span class="lbl">Entry Price</span>
+            <span class="val" id="rec-entry">-</span>
+          </div>
+          <div class="metric-item">
+            <span class="lbl">Stop Loss (SL)</span>
+            <span class="val text-danger" id="rec-sl">-</span>
+          </div>
+          <div class="metric-item">
+            <span class="lbl">Take Profit 1 (TP)</span>
+            <span class="val text-success" id="rec-tp1">-</span>
+          </div>
+          <div class="metric-item">
+            <span class="lbl">Leverage</span>
+            <span class="val" id="rec-lev">1x</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-title">Indicators Overview</div>
+        <div class="ind-summary-grid" id="ind-summary-grid">
+          <div class="ind-badge" id="badge-rsi">RSI: --</div>
+          <div class="ind-badge" id="badge-ema">EMA: --</div>
+          <div class="ind-badge" id="badge-macd">MACD: --</div>
+          <div class="ind-badge" id="badge-bb">BB: --</div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button id="btn-refresh" class="btn btn-primary">🔄 Analyze</button>
+        <button id="btn-quick-alert" class="btn btn-secondary">🔔 Set TP/SL Alert</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Screener -->
+    <div id="tab-screener" class="tab-pane">
+      <div class="screener-header">
+        <span class="screener-title">Live Watchlist Scanner</span>
+        <button id="btn-run-scan" class="btn-mini-primary">🔄 Scan Now</button>
+      </div>
+      <div class="screener-table-wrap">
+        <table class="screener-table">
+          <thead>
+            <tr>
+              <th>Pair</th>
+              <th>Price</th>
+              <th>24h</th>
+              <th>Signal</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="screener-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: #94a3b8; padding: 16px;">Scanning coins in background...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 3: Alerts -->
+    <div id="tab-alerts" class="tab-pane">
+      <div class="section-card">
+        <div class="card-title">➕ Add Custom Price / TP-SL Alert</div>
+        <div class="alert-form">
+          <div class="form-row">
+            <input type="text" id="alert-symbol" placeholder="BTCUSDT" value="BTCUSDT" style="width: 80px;">
+            <input type="number" step="any" id="alert-price" placeholder="Target Price" style="flex: 1;">
+            <select id="alert-condition" style="width: 85px;">
+              <option value="ABOVE">Above (≥)</option>
+              <option value="BELOW">Below (≤)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <input type="text" id="alert-note" placeholder="Note (e.g. TP Target / Support Rebound)" style="flex: 1;">
+            <button id="btn-add-alert" class="btn btn-primary" style="padding: 6px 12px;">Add Alert</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card" style="margin-top: 10px;">
+        <div class="card-title">Active Alerts & Positions</div>
+        <div class="alerts-list" id="alerts-list">
+          <div style="text-align: center; color: #94a3b8; padding: 12px; font-size: 11px;">No active price alerts.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developer Profile Footer -->
+    <footer class="popup-dev-footer">
+      <span>Built by <strong style="color: #38bdf8;">PrivyXe</strong></span>
+      <div class="dev-links">
+        <a href="https://x.com/PrivyXe" target="_blank" class="dev-link-btn" title="Follow on X (Twitter)">𝕏 @PrivyXe</a>
+        <a href="https://github.com/PrivyXe" target="_blank" class="dev-link-btn" title="GitHub Profile">🐙 GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>

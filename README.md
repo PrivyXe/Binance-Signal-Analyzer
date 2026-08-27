@@ -1,15 +1,16 @@
 <div align="center">
 
-# 📊 Binance Signal Analyzer
+# 📊 Binance Signal Analyzer Pro
 
-### Advanced Technical Analysis Chrome Extension for Binance Trading
+### Advanced Technical Analysis, Market Screener & TP/SL Alerts for Binance Trading
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/binance-signal-analyzer)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/PrivyXe/Binance-Signal-Analyzer)
 [![Manifest](https://img.shields.io/badge/manifest-v3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![Twitter Follow](https://img.shields.io/badge/X-@PrivyXe-black.svg?logo=x)](https://x.com/PrivyXe)
+[![GitHub](https://img.shields.io/badge/GitHub-PrivyXe-181717.svg?logo=github)](https://github.com/PrivyXe)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
-[![Chrome](https://img.shields.io/badge/chrome-88%2B-brightgreen.svg)](https://www.google.com/chrome/)
 
-[English](#english) | [Türkçe](#turkish)
+**Developed by [@PrivyXe](https://x.com/PrivyXe)**
 
 ---
 
@@ -52,52 +53,67 @@ A powerful Chrome Extension (Manifest V3) that provides real-time technical anal
 - 🔐 **Secure & Private** - All data stored locally, no external servers
 - 🚫 **Non-intrusive** - Doesn't modify Binance or TradingView functionality
 
-## 📸 Screenshots
+## 📸 Screenshots & Live Preview
 
-### Main Panel & Chart Overlay
-*Beautiful floating panel with real-time indicators and visual signal overlay*
+<div align="center">
+  <img src="./secreen.PNG" alt="Binance Signal Analyzer Pro Live Chart Overlay" width="100%" style="border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <p><em>Real-Time Binance TradingView Chart Overlay with Live Support/Resistance Levels, TP/SL Target Lines & Indicator Signals</em></p>
+</div>
 
-### Advanced Settings Page
-*Configure all 10 indicators with custom parameters*
+---
 
-### Signal Detection
-*Clear buy/sell arrows with trend indicators on the chart*
+## 🛠️ Installation & Development
 
-## 🛠️ Installation
+### 📦 Build & Run (TypeScript + Manifest V3)
 
-### Quick Install (5 minutes)
-
-1. **Clone or Download**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/PrivyXe/binance-signal-analyzer.git
    cd binance-signal-analyzer
    ```
 
-2. **Generate Icons** (Optional)
-   - Open `extension/icons/convert-svg-to-png.html` in browser
-   - Click "Download All Icons"
-   - Save the 3 PNG files to `extension/icons/` folder
-   - *Or skip this step - extension will work with default Chrome icon*
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3. **Load Extension**
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable **Developer mode** (toggle in top right)
+3. **Build the extension**
+   ```bash
+   npm run build
+   ```
+   > This compiles all TypeScript sources and creates the production-ready extension in the `dist/` directory.
+
+4. **Load into Google Chrome**
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Toggle **Developer mode** (in the top-right corner)
    - Click **Load unpacked**
-   - Select the `extension` folder
+   - Select the `dist/` directory inside this project folder
 
-4. **Start Trading**
-   - Navigate to [Binance Trading](https://www.binance.com/en/trade/BTC_USDT)
-   - Panel appears automatically in top-right corner
-   - Signals appear on the chart! 🎉
+5. **Development Watch Mode**
+   ```bash
+   npm run dev
+   ```
 
-## 🎯 Usage
+### 📁 Project Architecture
 
-### Quick Start
-
-1. **Open Binance** - Go to any Binance trading pair
-2. **View Signals** - Floating panel shows real-time analysis
-3. **Change Timeframe** - Select from dropdown (1m, 5m, 15m, 1h, 4h, etc.)
-4. **Configure Settings** - Click ⚙️ Settings button for advanced options
+```text
+├── dist/                # Production-ready Chrome Extension build
+├── public/              # Static assets & Manifest V3 configuration
+│   ├── icons/           # Extension icons (16, 48, 128px)
+│   └── manifest.json    # Chrome Extension Manifest V3 definition
+├── src/
+│   ├── types/           # Strongly-typed models (Binance, Indicators, Signals, Settings)
+│   ├── indicators/      # Pure mathematical technical indicators (RSI, EMA, MACD, BB, etc.)
+│   ├── services/        # API client, Storage service & Multi-indicator Signal Engine
+│   ├── background/      # MV3 Service Worker & background scheduler
+│   ├── content/         # Binance & TradingView chart detector, Canvas overlay & Floating HUD
+│   ├── popup/           # Quick status popup (HTML/TS/CSS)
+│   ├── options/         # Comprehensive settings dashboard (HTML/TS/CSS)
+│   └── styles/          # Modern Glassmorphism theme and stylesheets
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
 
 ### Understanding Signals & Recommendations
 

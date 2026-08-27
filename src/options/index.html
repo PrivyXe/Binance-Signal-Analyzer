@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Signal Analyzer - Gelişmiş Ayarlar</title>
+  <link rel="stylesheet" href="./options.css">
+</head>
+<body>
+  <div class="options-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">📊</span>
+        <div>
+          <h2>Signal Analyzer</h2>
+          <span class="brand-sub">Gelişmiş Yapılandırma</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#general" class="nav-item active">⚙️ Genel Ayarlar</a>
+        <a href="#indicators" class="nav-item">📈 İndikatör Seçimi</a>
+        <a href="#parameters" class="nav-item">🎛️ Parametreler</a>
+        <a href="#overlay" class="nav-item">🎨 Grafik Katmanı</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-save-top" class="btn btn-save">💾 Ayarları Kaydet</button>
+        <button id="btn-reset" class="btn btn-outline">🔄 Sıfırla</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div id="status-toast" class="toast">Ayarlar başarıyla kaydedildi!</div>
+
+      <!-- Section: General -->
+      <section id="general" class="settings-section">
+        <h3>⚙️ Genel Yapılandırma</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="cfg-symbol">Varsayılan Parite (Sembol)</label>
+            <input type="text" id="cfg-symbol" placeholder="BTCUSDT">
+            <span class="hint">Örn: BTCUSDT, ETHUSDT, SOLUSDT</span>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-interval">Varsayılan Zaman Dilimi</label>
+            <select id="cfg-interval">
+              <option value="1m">1m (1 Dakika)</option>
+              <option value="5m">5m (5 Dakika)</option>
+              <option value="15m">15m (15 Dakika)</option>
+              <option value="1h">1h (1 Saat)</option>
+              <option value="4h">4h (4 Saat)</option>
+              <option value="1d">1D (1 Gün)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-update-interval">Yenileme Sıklığı (Saniye)</label>
+            <input type="number" id="cfg-update-interval" min="2" max="60" value="5">
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-candle-limit">Mum Veri Limiti (Klines)</label>
+            <input type="number" id="cfg-candle-limit" min="50" max="500" value="200">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Indicators -->
+      <section id="indicators" class="settings-section">
+        <h3>📈 Aktif İndikatörler</h3>
+        <p class="section-desc">Sinyal motorunda ağırlıklandırılacak teknik göstergeleri seçin.</p>
+        
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-rsi">
+            <div class="toggle-info">
+              <span class="title">RSI (Relative Strength Index)</span>
+              <span class="desc">Aşırı alım ve aşırı satım bölgelerini belirler</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-ema">
+            <div class="toggle-info">
+              <span class="title">EMA (Üstel Hareketli Ortalama)</span>
+              <span class="desc">Hızlı ve yavaş trend yönü / Kesişim tespiti</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-macd">
+            <div class="toggle-info">
+              <span class="title">MACD (Hareketli Ortalama Yakınsama)</span>
+              <span class="desc">Momentum ve trend dönüş sinyalleri</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-bb">
+            <div class="toggle-info">
+              <span class="title">Bollinger Bands</span>
+              <span class="desc">Volatilite kanalları ve bant sıkışması analizi</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-adx">
+            <div class="toggle-info">
+              <span class="title">ADX (+DI / -DI)</span>
+              <span class="desc">Mevcut trendin gücünü ve yönünü ölçer</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-stoch">
+            <div class="toggle-info">
+              <span class="title">Stochastic Oscillator</span>
+              <span class="desc">%K ve %D momentum osilatörü</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sar">
+            <div class="toggle-info">
+              <span class="title">Parabolic SAR</span>
+              <span class="desc">Stop and Reverse trend dönüş noktaları</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-volume">
+            <div class="toggle-info">
+              <span class="title">Volume SMA & Surge</span>
+              <span class="desc">Hacim artışları ve onay mekanizması</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sr">
+            <div class="toggle-info">
+              <span class="title">Destek & Direnç Seviyeleri</span>
+              <span class="desc">Swing High/Low dinamik kümeleme</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-fib">
+            <div class="toggle-info">
+              <span class="title">Fibonacci Retracement</span>
+              <span class="desc">Otomatik altın oran seviyeleri (0.618 vb.)</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section: Parameters -->
+      <section id="parameters" class="settings-section">
+        <h3>🎛️ İndikatör Parametreleri</h3>
+        <div class="params-box">
+          <h4>RSI Parametreleri</h4>
+          <div class="param-row">
+            <label>Periyot: <input type="number" id="param-rsi-period" min="2" max="50" value="14"></label>
+            <label>Aşırı Satım (Oversold): <input type="number" id="param-rsi-os" min="10" max="45" value="30"></label>
+            <label>Aşırı Alım (Overbought): <input type="number" id="param-rsi-ob" min="55" max="90" value="70"></label>
+          </div>
+
+          <h4>EMA Parametreleri</h4>
+          <div class="param-row">
+            <label>Hızlı Periyot: <input type="number" id="param-ema-fast" min="5" max="100" value="20"></label>
+            <label>Yavaş Periyot: <input type="number" id="param-ema-slow" min="20" max="300" value="50"></label>
+          </div>
+
+          <h4>MACD Parametreleri</h4>
+          <div class="param-row">
+            <label>Fast: <input type="number" id="param-macd-fast" value="12"></label>
+            <label>Slow: <input type="number" id="param-macd-slow" value="26"></label>
+            <label>Signal: <input type="number" id="param-macd-signal" value="9"></label>
+          </div>
+
+          <h4>ATR & Risk Çarpanları</h4>
+          <div class="param-row">
+            <label>ATR Periyodu: <input type="number" id="param-atr-period" value="14"></label>
+            <label>SL Çarpanı (x ATR): <input type="number" step="0.1" id="param-atr-sl" value="1.5"></label>
+            <label>TP Çarpanı (x ATR): <input type="number" step="0.1" id="param-atr-tp" value="2.5"></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Overlay -->
+      <section id="overlay" class="settings-section">
+        <h3>🎨 Grafik Üstü Çizim (Overlay)</h3>
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-sr">
+            <div class="toggle-info">
+              <span class="title">Destek / Direnç Çizgileri</span>
+              <span class="desc">Grafik üzerinde S1, S2, R1, R2 çizgilerini göster</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-tpsl">
+            <div class="toggle-info">
+              <span class="title">TP / SL Hedef Çizgileri</span>
+              <span class="desc">İşlem planı hedeflerini görselleştir</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-badge">
+            <div class="toggle-info">
+              <span class="title">Grafik Sinyal Rozeti</span>
+              <span class="desc">Grafiğin üst orta kısmında anlık sinyal pill'ini göster</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Bottom Save Action -->
+      <div class="save-bar">
+        <button id="btn-save-bottom" class="btn btn-save">💾 Tüm Değişiklikleri Kaydet</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./options.ts"></script>
+</body>
+</html>

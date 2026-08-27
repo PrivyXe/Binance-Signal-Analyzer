@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Signal Analyzer Pro - Advanced Settings</title>
+  <script type="module" crossorigin src="/assets/options-ClYeF7yC.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/soundService-jJxJchzJ.js">
+  <link rel="stylesheet" crossorigin href="/assets/options-DV3hWQiw.css">
+</head>
+<body>
+  <div class="options-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">📊</span>
+        <div>
+          <h2>Signal Analyzer</h2>
+          <span class="brand-sub">Advanced Configuration</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#general" class="nav-item active">⚙️ General Settings</a>
+        <a href="#screener" class="nav-item">📡 Screener & Watchlist</a>
+        <a href="#sound" class="nav-item">🔔 Sound & Audio Alerts</a>
+        <a href="#indicators" class="nav-item">📈 Indicators Selection</a>
+        <a href="#parameters" class="nav-item">🎛️ Indicator Parameters</a>
+        <a href="#overlay" class="nav-item">🎨 Chart Canvas Overlay</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="dev-profile-card">
+          <div class="dev-avatar">👨‍💻</div>
+          <div class="dev-info">
+            <span class="dev-name">Developed by <strong>PrivyXe</strong></span>
+            <div class="dev-links-row">
+              <a href="https://x.com/PrivyXe" target="_blank" class="dev-social-link">𝕏 @PrivyXe</a>
+              <a href="https://github.com/PrivyXe" target="_blank" class="dev-social-link">🐙 GitHub</a>
+            </div>
+          </div>
+        </div>
+        <button id="btn-save-top" class="btn btn-save">💾 Save Settings</button>
+        <button id="btn-reset" class="btn btn-outline">🔄 Reset Defaults</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div id="status-toast" class="toast">Settings saved successfully!</div>
+
+      <!-- Section 1: General -->
+      <section id="general" class="settings-section">
+        <h3>⚙️ General Configuration</h3>
+        <p class="section-desc">Default pair and background refresh intervals.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="cfg-symbol">Default Trading Pair</label>
+            <input type="text" id="cfg-symbol" placeholder="BTCUSDT">
+            <span class="hint">e.g. BTCUSDT, ETHUSDT, SOLUSDT</span>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-interval">Default Timeframe</label>
+            <select id="cfg-interval">
+              <option value="1m">1m (1 Minute)</option>
+              <option value="5m">5m (5 Minutes)</option>
+              <option value="15m">15m (15 Minutes)</option>
+              <option value="1h">1h (1 Hour)</option>
+              <option value="4h">4h (4 Hours)</option>
+              <option value="1d">1D (1 Day)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-update-interval">Chart Refresh Rate (Seconds)</label>
+            <input type="number" id="cfg-update-interval" min="2" max="60" value="5">
+          </div>
+
+          <div class="form-group">
+            <label for="cfg-candle-limit">Candle History Limit (Klines)</label>
+            <input type="number" id="cfg-candle-limit" min="50" max="500" value="200">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Screener & Watchlist -->
+      <section id="screener" class="settings-section">
+        <h3>📡 Background Screener & Watchlist</h3>
+        <p class="section-desc">Configure coins monitored automatically in background for Buy/Sell signals.</p>
+        
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="cfg-scanner-enable">
+            <div class="toggle-info">
+              <span class="title">Enable Background Market Screener</span>
+              <span class="desc">Scans watchlist periodically and fires alerts</span>
+            </div>
+          </label>
+
+          <div class="form-group">
+            <label for="cfg-scanner-interval">Scan Interval (Minutes)</label>
+            <input type="number" id="cfg-scanner-interval" min="1" max="60" value="3">
+          </div>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <label style="font-weight: 700; font-size: 12px;">Monitored Watchlist Symbols (Comma-separated)</label>
+          <textarea id="cfg-watchlist" rows="3" style="width: 100%; background: #0b1120; border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 8px; border-radius: 8px; font-family: monospace; font-size: 12px; margin-top: 6px;"></textarea>
+          <span class="hint">e.g. BTCUSDT, ETHUSDT, SOLUSDT, BNBUSDT, XRPUSDT, DOGEUSDT, AVAXUSDT</span>
+        </div>
+      </section>
+
+      <!-- Section 3: Sound & Audio -->
+      <section id="sound" class="settings-section">
+        <h3>🔔 Audio Alerts & Sound Chimes</h3>
+        <p class="section-desc">Customize sound notifications for signals and TP/SL triggers.</p>
+
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="cfg-sound-master">
+            <div class="toggle-info">
+              <span class="title">Enable Sound Alerts (Master)</span>
+              <span class="desc">Master switch for all audio chimes</span>
+            </div>
+          </label>
+
+          <div class="form-group">
+            <label for="cfg-sound-vol">Master Volume (10% - 100%)</label>
+            <input type="range" id="cfg-sound-vol" min="0.1" max="1.0" step="0.05" value="0.7">
+          </div>
+        </div>
+
+        <div class="sound-test-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-buy"> Play Sound on BUY Signal</label>
+            <button class="btn-mini-sound" id="test-sound-buy">🔊 Test Buy Chime</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-sell"> Play Sound on SELL Signal</label>
+            <button class="btn-mini-sound" id="test-sound-sell">🔊 Test Sell Chime</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-tp"> Play Sound on TP Target Hit</label>
+            <button class="btn-mini-sound" id="test-sound-tp">🎯 Test TP Victory</button>
+          </div>
+          <div class="sound-item-box">
+            <label><input type="checkbox" id="cfg-sound-sl"> Play Sound on Stop Loss Trigger</label>
+            <button class="btn-mini-sound" id="test-sound-sl">🛑 Test SL Alarm</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Indicators Selection -->
+      <section id="indicators" class="settings-section">
+        <h3>📈 Active Technical Indicators</h3>
+        <p class="section-desc">Select indicators calculated and weighted by the composite signal engine.</p>
+        
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-rsi">
+            <div class="toggle-info">
+              <span class="title">RSI (Relative Strength Index)</span>
+              <span class="desc">Identifies oversold & overbought momentum levels</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-ema">
+            <div class="toggle-info">
+              <span class="title">EMA (Exponential Moving Average)</span>
+              <span class="desc">Fast/Slow moving average trend crossovers</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-macd">
+            <div class="toggle-info">
+              <span class="title">MACD (Moving Average Convergence Divergence)</span>
+              <span class="desc">Histogram momentum & signal line crosses</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-bb">
+            <div class="toggle-info">
+              <span class="title">Bollinger Bands</span>
+              <span class="desc">Volatility bands & breakout squeeze detector</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-adx">
+            <div class="toggle-info">
+              <span class="title">ADX (+DI / -DI)</span>
+              <span class="desc">Trend strength and directional movement index</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-stoch">
+            <div class="toggle-info">
+              <span class="title">Stochastic Oscillator</span>
+              <span class="desc">%K and %D cycle momentum oscillator</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sar">
+            <div class="toggle-info">
+              <span class="title">Parabolic SAR</span>
+              <span class="desc">Stop and Reverse trend flip points</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-volume">
+            <div class="toggle-info">
+              <span class="title">Volume SMA & Surge</span>
+              <span class="desc">Volume breakout and trend confirmation</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-sr">
+            <div class="toggle-info">
+              <span class="title">Support & Resistance Levels</span>
+              <span class="desc">Dynamic swing high/low price clustering</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ind-fib">
+            <div class="toggle-info">
+              <span class="title">Fibonacci Retracement</span>
+              <span class="desc">Automatic Golden Ratio zones (0.618, 0.382)</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section 5: Parameters -->
+      <section id="parameters" class="settings-section">
+        <h3>🎛️ Indicator Parameters</h3>
+        <div class="params-box">
+          <h4>RSI Settings</h4>
+          <div class="param-row">
+            <label>Period: <input type="number" id="param-rsi-period" min="2" max="50" value="14"></label>
+            <label>Oversold: <input type="number" id="param-rsi-os" min="10" max="45" value="30"></label>
+            <label>Overbought: <input type="number" id="param-rsi-ob" min="55" max="90" value="70"></label>
+          </div>
+
+          <h4>EMA Settings</h4>
+          <div class="param-row">
+            <label>Fast Period: <input type="number" id="param-ema-fast" min="5" max="100" value="20"></label>
+            <label>Slow Period: <input type="number" id="param-ema-slow" min="20" max="300" value="50"></label>
+          </div>
+
+          <h4>MACD Settings</h4>
+          <div class="param-row">
+            <label>Fast: <input type="number" id="param-macd-fast" value="12"></label>
+            <label>Slow: <input type="number" id="param-macd-slow" value="26"></label>
+            <label>Signal: <input type="number" id="param-macd-signal" value="9"></label>
+          </div>
+
+          <h4>ATR & Risk Multipliers</h4>
+          <div class="param-row">
+            <label>ATR Period: <input type="number" id="param-atr-period" value="14"></label>
+            <label>SL Multiplier (x ATR): <input type="number" step="0.1" id="param-atr-sl" value="1.5"></label>
+            <label>TP Multiplier (x ATR): <input type="number" step="0.1" id="param-atr-tp" value="2.5"></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Canvas Overlay -->
+      <section id="overlay" class="settings-section">
+        <h3>🎨 Chart Canvas Overlay</h3>
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-sr">
+            <div class="toggle-info">
+              <span class="title">Support / Resistance Lines</span>
+              <span class="desc">Draw S1, S2, R1, R2 horizontal lines on chart</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-tpsl">
+            <div class="toggle-info">
+              <span class="title">TP / SL Target Lines</span>
+              <span class="desc">Visualize trade plan targets directly on chart</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-markers">
+            <div class="toggle-info">
+              <span class="title">Buy & Sell Candle Markers</span>
+              <span class="desc">Draw historical ▲ BUY and ▼ SELL signals on chart candles</span>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" id="ov-badge">
+            <div class="toggle-info">
+              <span class="title">Top Chart Signal Badge</span>
+              <span class="desc">Show real-time signal pill at the top of the chart</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Bottom Save Action -->
+      <div class="save-bar">
+        <button id="btn-save-bottom" class="btn btn-save">💾 Save All Settings</button>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
